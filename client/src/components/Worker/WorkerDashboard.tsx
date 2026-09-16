@@ -383,41 +383,53 @@ export const WorkerDashboard: React.FC<WorkerDashboardProps> = ({ user, onLogout
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
-      {/* Header */}
-      <header className="bg-slate-900 border-b border-slate-800 px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sticky top-0 z-30">
-        <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-600 to-amber-700 flex items-center justify-center font-bold text-slate-950 shadow-md">
-            <Sparkles className="w-6 h-6 text-slate-950" />
+      {/* Header Responsivo */}
+      <header className="bg-slate-900 border-b border-slate-800 px-3 sm:px-6 py-3 sm:py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sticky top-0 z-30 shadow-md">
+        <div className="flex items-center justify-between sm:justify-start space-x-3 w-full sm:w-auto">
+          <div className="flex items-center space-x-2.5">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-amber-600 to-amber-700 flex items-center justify-center font-bold text-slate-950 shadow-md flex-shrink-0">
+              <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-slate-950" />
+            </div>
+            <div>
+              <h1 className="text-sm sm:text-lg font-bold tracking-tight text-white flex items-center space-x-1.5">
+                <span className="truncate max-w-[170px] sm:max-w-none">Portal Profesional</span>
+                <span className="px-1.5 sm:px-2 py-0.5 text-[10px] sm:text-xs bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-full font-mono flex items-center space-x-1 flex-shrink-0">
+                  <Key className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-emerald-400" />
+                  <span>Activo</span>
+                </span>
+              </h1>
+              <p className="text-[11px] sm:text-xs text-slate-400 truncate max-w-[210px] sm:max-w-none">
+                {user.firstName} {user.lastName} (Cédula: <span className="font-mono text-amber-400">{user.nationalId}</span>)
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-lg font-bold tracking-tight text-white flex items-center space-x-2">
-              <span>Portal Profesional & Agenda</span>
-              <span className="px-2 py-0.5 text-xs bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-full font-mono flex items-center space-x-1">
-                <Key className="w-3 h-3 text-emerald-400" />
-                <span>Licencia Activa</span>
-              </span>
-            </h1>
-            <p className="text-xs text-slate-400">
-              {user.firstName} {user.lastName} (Cédula: <span className="font-mono text-amber-400">{user.nationalId}</span>)
-            </p>
-          </div>
+
+          {/* Botón Salir Móvil */}
+          <button
+            onClick={onLogout}
+            className="sm:hidden p-2 bg-red-950/40 hover:bg-red-900/60 text-red-300 rounded-xl border border-red-800/40 transition active:scale-95"
+            title="Cerrar Sesión"
+          >
+            <LogOut className="w-4 h-4" />
+          </button>
         </div>
 
-        <div className="flex items-center space-x-3 self-end sm:self-auto">
+        <div className="flex items-center justify-between sm:justify-end space-x-2 sm:space-x-3 w-full sm:w-auto">
           {/* Tasa Oficial BCV */}
           <ExchangeRateWidget onRateLoaded={setBcvRate} />
 
           <button
             onClick={() => setShowNewCitaModal(true)}
-            className="px-3.5 py-2 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-slate-950 text-xs font-bold rounded-lg flex items-center space-x-1.5 shadow transition"
+            className="px-3 sm:px-3.5 py-1.5 sm:py-2 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-slate-950 text-xs font-bold rounded-xl flex items-center space-x-1 shadow transition active:scale-95 flex-shrink-0"
           >
             <Plus className="w-4 h-4" />
-            <span>Agendar Cita</span>
+            <span className="hidden sm:inline">Agendar Cita</span>
+            <span className="sm:hidden">Agendar</span>
           </button>
 
           <button
             onClick={onLogout}
-            className="px-3 py-2 bg-red-950/40 hover:bg-red-900/60 text-red-300 text-xs font-semibold rounded-lg flex items-center space-x-1.5 border border-red-800/40 transition"
+            className="hidden sm:flex px-3 py-2 bg-red-950/40 hover:bg-red-900/60 text-red-300 text-xs font-semibold rounded-xl items-center space-x-1.5 border border-red-800/40 transition"
           >
             <LogOut className="w-4 h-4" />
             <span>Salir</span>
@@ -425,8 +437,8 @@ export const WorkerDashboard: React.FC<WorkerDashboardProps> = ({ user, onLogout
         </div>
       </header>
 
-      {/* Tabs */}
-      <div className="bg-slate-900/50 border-b border-slate-800/60 px-6 flex space-x-8">
+      {/* Tabs Desktop (ocultos en móvil porque usamos la barra inferior nativa) */}
+      <div className="hidden sm:flex bg-slate-900/50 border-b border-slate-800/60 px-6 space-x-8">
         {[
           { id: 'calendar', label: 'Mi Calendario & Agenda', icon: Calendar, badge: citas.filter(c => c.estado === 'SCHEDULED').length },
           { id: 'clientas', label: 'Mis Clientas', icon: Users, badge: clientas.length },
@@ -455,41 +467,83 @@ export const WorkerDashboard: React.FC<WorkerDashboardProps> = ({ user, onLogout
         })}
       </div>
 
+      {/* Barra de Navegación Inferior Móvil (Mobile Bottom Navigation Bar) */}
+      <div className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-900/95 backdrop-blur-xl border-t border-slate-800 px-3 py-1.5 flex justify-around items-center shadow-2xl safe-area-bottom">
+        {[
+          { id: 'calendar', label: 'Agenda', icon: Calendar, badge: citas.filter(c => c.estado === 'SCHEDULED').length },
+          { id: 'clientas', label: 'Clientes', icon: Users, badge: clientas.length },
+          { id: 'servicios', label: 'Servicios', icon: Scissors, badge: servicios.length },
+        ].map((tab) => {
+          const Icon = tab.icon;
+          const isActive = activeTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as any)}
+              className={`flex-1 py-1.5 flex flex-col items-center justify-center relative transition rounded-xl ${
+                isActive ? 'text-amber-400 font-bold' : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              <div className="relative">
+                <Icon className={`w-5 h-5 transition-transform ${isActive ? 'scale-110' : ''}`} />
+                {tab.badge !== undefined && tab.badge > 0 && (
+                  <span className="absolute -top-1.5 -right-2.5 px-1 min-w-[16px] h-4 bg-amber-500 text-slate-950 font-extrabold text-[9px] rounded-full flex items-center justify-center font-mono">
+                    {tab.badge}
+                  </span>
+                )}
+              </div>
+              <span className="text-[10px] mt-1">{tab.label}</span>
+            </button>
+          );
+        })}
+
+        {/* Botón Central Rápido para Agendar */}
+        <button
+          onClick={() => setShowNewCitaModal(true)}
+          className="flex-1 py-1 flex flex-col items-center justify-center text-amber-300 font-bold active:scale-95 transition"
+        >
+          <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-amber-600 to-amber-500 text-slate-950 flex items-center justify-center shadow-lg shadow-amber-500/20">
+            <Plus className="w-5 h-5 text-slate-950 stroke-[3]" />
+          </div>
+          <span className="text-[10px] mt-0.5 font-bold text-amber-400">+Cita</span>
+        </button>
+      </div>
+
       {/* Main Content */}
-      <main className="flex-1 p-6 max-w-6xl w-full mx-auto space-y-6">
+      <main className="flex-1 p-3 sm:p-6 pb-28 sm:pb-8 max-w-6xl w-full mx-auto space-y-4 sm:space-y-6">
         {/* KPI Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-lg">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+          <div className="bg-slate-900 border border-slate-800 p-4 sm:p-5 rounded-2xl shadow-lg">
             <div className="flex items-center justify-between">
-              <span className="text-xs text-slate-400 uppercase tracking-wider font-semibold">Total Ingresos Generados</span>
+              <span className="text-xs text-slate-400 uppercase tracking-wider font-semibold">Ingresos Generados</span>
               <DollarSign className="w-5 h-5 text-emerald-400" />
             </div>
-            <div className="mt-3 text-2xl font-bold text-emerald-300 font-mono">
+            <div className="mt-2 sm:mt-3 text-xl sm:text-2xl font-bold text-emerald-300 font-mono">
               ${Number(summary?.totalIngresos || 0).toFixed(2)}
             </div>
-            <span className="text-[11px] text-slate-500 mt-1 block">Facturación de citas concluidas</span>
+            <span className="text-[10px] sm:text-[11px] text-slate-500 mt-1 block">Facturación de citas concluidas</span>
           </div>
 
-          <div className="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-lg">
+          <div className="bg-slate-900 border border-slate-800 p-4 sm:p-5 rounded-2xl shadow-lg">
             <div className="flex items-center justify-between">
               <span className="text-xs text-slate-400 uppercase tracking-wider font-semibold">Citas Programadas (Hoy)</span>
               <CalendarCheck className="w-5 h-5 text-amber-400" />
             </div>
-            <div className="mt-3 text-2xl font-bold text-amber-300 font-mono">
+            <div className="mt-2 sm:mt-3 text-xl sm:text-2xl font-bold text-amber-300 font-mono">
               {summary?.todayAppointmentsCount || 0}
             </div>
-            <span className="text-[11px] text-slate-500 mt-1 block">Atenciones agendadas para el día</span>
+            <span className="text-[10px] sm:text-[11px] text-slate-500 mt-1 block">Atenciones agendadas para el día</span>
           </div>
 
-          <div className="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-lg">
+          <div className="bg-slate-900 border border-slate-800 p-4 sm:p-5 rounded-2xl shadow-lg">
             <div className="flex items-center justify-between">
-              <span className="text-xs text-slate-400 uppercase tracking-wider font-semibold">Cartera de Clientas</span>
+              <span className="text-xs text-slate-400 uppercase tracking-wider font-semibold">Cartera de Clientes</span>
               <Users className="w-5 h-5 text-purple-400" />
             </div>
-            <div className="mt-3 text-2xl font-bold text-white font-mono">
+            <div className="mt-2 sm:mt-3 text-xl sm:text-2xl font-bold text-white font-mono">
               {summary?.totalClientas || 0}
             </div>
-            <span className="text-[11px] text-slate-500 mt-1 block">Fichas de clientas registradas</span>
+            <span className="text-[10px] sm:text-[11px] text-slate-500 mt-1 block">Fichas de clientes registradas</span>
           </div>
         </div>
 
@@ -689,12 +743,12 @@ export const WorkerDashboard: React.FC<WorkerDashboardProps> = ({ user, onLogout
 
       {/* Modal: Registrar Nueva Clienta (Exactamente 3 campos) */}
       {showNewClientaModal && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl shadow-2xl p-6 relative">
-            <button onClick={() => setShowNewClientaModal(false)} className="absolute top-5 right-5 text-slate-400 hover:text-white">
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
+          <div className="bg-slate-900 border border-slate-800 w-full max-w-md max-h-[90vh] overflow-y-auto rounded-3xl sm:rounded-2xl shadow-2xl p-5 sm:p-6 relative">
+            <button onClick={() => setShowNewClientaModal(false)} className="absolute top-5 right-5 text-slate-400 hover:text-white p-1">
               <X className="w-5 h-5" />
             </button>
-            <h2 className="text-lg font-bold text-white mb-4">Registrar Nuevo Cliente</h2>
+            <h2 className="text-base sm:text-lg font-bold text-white mb-4">Registrar Nuevo Cliente</h2>
             <form onSubmit={handleCreateClienta} className="space-y-3.5 text-xs">
               <div>
                 <label className="block text-slate-300 font-medium mb-1">Nombre Completo</label>
@@ -704,7 +758,7 @@ export const WorkerDashboard: React.FC<WorkerDashboardProps> = ({ user, onLogout
                   value={cNombre}
                   onChange={(e) => setCNombre(e.target.value)}
                   placeholder="Ej. Sofía Hernández"
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-white"
+                  className="w-full px-3 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white text-sm sm:text-xs"
                 />
               </div>
 
@@ -716,7 +770,7 @@ export const WorkerDashboard: React.FC<WorkerDashboardProps> = ({ user, onLogout
                   value={cTelefono}
                   onChange={(e) => setCTelefono(e.target.value)}
                   placeholder="Ej. 04121234567"
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-white font-mono"
+                  className="w-full px-3 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white font-mono text-sm sm:text-xs"
                 />
               </div>
 
@@ -728,7 +782,7 @@ export const WorkerDashboard: React.FC<WorkerDashboardProps> = ({ user, onLogout
                   value={cDireccion}
                   onChange={(e) => setCDireccion(e.target.value)}
                   placeholder="Ej. Urb. Las Delicias, Calle 3"
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-white"
+                  className="w-full px-3 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white text-sm sm:text-xs"
                 />
               </div>
 
@@ -736,13 +790,13 @@ export const WorkerDashboard: React.FC<WorkerDashboardProps> = ({ user, onLogout
                 <button
                   type="button"
                   onClick={() => setShowNewClientaModal(false)}
-                  className="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg font-semibold"
+                  className="px-4 py-2.5 bg-slate-800 text-slate-300 rounded-xl font-semibold text-xs"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold rounded-lg shadow"
+                  className="px-5 py-2.5 bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold rounded-xl shadow text-xs active:scale-95"
                 >
                   Guardar Cliente
                 </button>
@@ -754,12 +808,12 @@ export const WorkerDashboard: React.FC<WorkerDashboardProps> = ({ user, onLogout
 
       {/* Modal: Crear Nuevo Servicio (Solo 2 campos: Servicio y Precio) */}
       {showNewServicioModal && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl shadow-2xl p-6 relative">
-            <button onClick={() => setShowNewServicioModal(false)} className="absolute top-5 right-5 text-slate-400 hover:text-white">
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
+          <div className="bg-slate-900 border border-slate-800 w-full max-w-md max-h-[90vh] overflow-y-auto rounded-3xl sm:rounded-2xl shadow-2xl p-5 sm:p-6 relative">
+            <button onClick={() => setShowNewServicioModal(false)} className="absolute top-5 right-5 text-slate-400 hover:text-white p-1">
               <X className="w-5 h-5" />
             </button>
-            <h2 className="text-lg font-bold text-white mb-4">Crear Nuevo Servicio</h2>
+            <h2 className="text-base sm:text-lg font-bold text-white mb-4">Crear Nuevo Servicio</h2>
             <form onSubmit={handleCreateServicio} className="space-y-4 text-xs">
               <div>
                 <label className="block text-slate-300 font-medium mb-1">¿Cuál es el servicio?</label>
@@ -768,8 +822,8 @@ export const WorkerDashboard: React.FC<WorkerDashboardProps> = ({ user, onLogout
                   required
                   value={sNombre}
                   onChange={(e) => setSNombre(e.target.value)}
-                  placeholder="Ej. Corte de Cabello, Uñas Semipermanentes, Cejas..."
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-white text-sm"
+                  placeholder="Ej. Corte de Cabello, Uñas, Cejas..."
+                  className="w-full px-3 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white text-sm sm:text-xs"
                 />
               </div>
 
@@ -781,7 +835,7 @@ export const WorkerDashboard: React.FC<WorkerDashboardProps> = ({ user, onLogout
                   required
                   value={sPrecio}
                   onChange={(e) => setSPrecio(Number(e.target.value))}
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-white font-mono text-sm"
+                  className="w-full px-3 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white font-mono text-sm sm:text-xs"
                 />
                 <div className="mt-1 text-xs text-amber-400 font-mono">
                   Equivalente oficial: <strong>Bs. {(Number(sPrecio) * bcvRate).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
@@ -789,10 +843,10 @@ export const WorkerDashboard: React.FC<WorkerDashboardProps> = ({ user, onLogout
               </div>
 
               <div className="pt-3 flex justify-end space-x-2">
-                <button type="button" onClick={() => setShowNewServicioModal(false)} className="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg font-semibold">
+                <button type="button" onClick={() => setShowNewServicioModal(false)} className="px-4 py-2.5 bg-slate-800 text-slate-300 rounded-xl font-semibold text-xs">
                   Cancelar
                 </button>
-                <button type="submit" className="px-5 py-2 bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold rounded-lg shadow">
+                <button type="submit" className="px-5 py-2.5 bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold rounded-xl shadow text-xs active:scale-95">
                   Guardar Servicio
                 </button>
               </div>
@@ -803,21 +857,24 @@ export const WorkerDashboard: React.FC<WorkerDashboardProps> = ({ user, onLogout
 
       {/* Modal: Editar Servicio */}
       {editingServicio && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl shadow-2xl p-6 relative">
-            <button onClick={() => setEditingServicio(null)} className="absolute top-5 right-5 text-slate-400 hover:text-white">
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
+          <div className="bg-slate-900 border border-slate-800 w-full max-w-md max-h-[90vh] overflow-y-auto rounded-3xl sm:rounded-2xl shadow-2xl p-5 sm:p-6 relative">
+            <button onClick={() => setEditingServicio(null)} className="absolute top-5 right-5 text-slate-400 hover:text-white p-1">
               <X className="w-5 h-5" />
             </button>
-            <h2 className="text-lg font-bold text-white mb-4">Editar Servicio</h2>
+            <h2 className="text-base sm:text-lg font-bold text-white mb-4 flex items-center space-x-2">
+              <Edit2 className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" />
+              <span>Editar Servicio</span>
+            </h2>
             <form onSubmit={handleUpdateServicio} className="space-y-4 text-xs">
               <div>
-                <label className="block text-slate-300 font-medium mb-1">¿Cuál es el servicio?</label>
+                <label className="block text-slate-300 font-medium mb-1">Nombre del Servicio</label>
                 <input
                   type="text"
                   required
                   value={editSNombre}
                   onChange={(e) => setEditSNombre(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-white text-sm"
+                  className="w-full px-3 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white text-sm sm:text-xs"
                 />
               </div>
 
@@ -829,7 +886,7 @@ export const WorkerDashboard: React.FC<WorkerDashboardProps> = ({ user, onLogout
                   required
                   value={editSPrecio}
                   onChange={(e) => setEditSPrecio(Number(e.target.value))}
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-white font-mono text-sm"
+                  className="w-full px-3 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white font-mono text-sm sm:text-xs"
                 />
                 <div className="mt-1 text-xs text-amber-400 font-mono">
                   Equivalente oficial: <strong>Bs. {(Number(editSPrecio) * bcvRate).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
@@ -837,10 +894,10 @@ export const WorkerDashboard: React.FC<WorkerDashboardProps> = ({ user, onLogout
               </div>
 
               <div className="pt-3 flex justify-end space-x-2">
-                <button type="button" onClick={() => setEditingServicio(null)} className="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg font-semibold">
+                <button type="button" onClick={() => setEditingServicio(null)} className="px-4 py-2.5 bg-slate-800 text-slate-300 rounded-xl font-semibold text-xs">
                   Cancelar
                 </button>
-                <button type="submit" className="px-5 py-2 bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold rounded-lg shadow">
+                <button type="submit" className="px-5 py-2.5 bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold rounded-xl shadow text-xs active:scale-95">
                   Actualizar Servicio
                 </button>
               </div>
