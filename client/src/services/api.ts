@@ -1,4 +1,11 @@
-const API_BASE = '/api';
+const getApiBase = () => {
+  if (typeof window !== 'undefined' && window.location.hostname.includes('github.io')) {
+    return localStorage.getItem('saas_api_url') || 'https://internship-donors-fusion-holders.trycloudflare.com/api';
+  }
+  return '/api';
+};
+
+const API_BASE = getApiBase();
 
 export const api = {
   getToken: () => localStorage.getItem('saas_token'),
