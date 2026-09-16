@@ -1,0 +1,185 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  SUPER_ADMIN
+  WORKER
+}
+
+enum UserStatus {
+  PENDING_APPROVAL
+  ACTIVE
+  SUSPENDED
+  INACTIVE
+}
+
+enum AppointmentStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum SubscriptionStatus {
+  TRIALING
+  ACTIVE
+  PAST_DUE
+  CANCELLED
+}
+
+enum BillingCycle {
+  MONTHLY
+  ANNUAL
+}
+
+// -------------------------------------------------------------
+// MODELO DE USUARIO (ADMINISTRACIÓN CENTRAL & RBAC)
+// -------------------------------------------------------------
+model User {
+  id                    String              @id @default(uuid())
+  firstName             String              @map("first_name")
+  lastName              String              @map("last_name")
+  email                 String              @unique
+  nationalId            String              @unique @map("national_id") // Cédula (Login ID)
+  phone                 String
+  address               String
+  password              String              // Hash bcrypt
+  role                  Role                @default(WORKER)
+  status                UserStatus          @default(PENDING_APPROVAL)
+  createdAt             DateTime            @default(now()) @map("created_at")
+  updatedAt             DateTime            @updatedAt @map("updated_at")
+
+  // Espacio de Trabajo Autónomo del Trabajador (Multi-Tenant Aislado)
+  clientas              Clienta[]           @relation("WorkerClientas")
+  servicios             Servicio[]          @relation("WorkerServicios")
+  citas                 Cita[]              @relation("WorkerCitas")
+
+  // Gestión de Plataforma (Super Admin)
+  subscriptions         Subscription[]
+  auditLogs             AuditLog[]
+
+  @@map("users")
+}
+
+// -------------------------------------------------------------
+// CLIENTAS (CARTERA PRIVADA DE CADA TRABAJADOR)
+// -------------------------------------------------------------
+model Clienta {
+  id        String   @id @default(uuid())
+  nombre    String
+  telefono  String?
+  direccion String?  @map("direccion")
+  email     String?
+  notas     String?  @db.Text
+  foto      String?  @db.Text
+  workerId  String   @map("worker_id")
+  worker    User     @relation("WorkerClientas", fields: [workerId], references: [id], onDelete: Cascade)
+  citas     Cita[]
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([workerId])
+  @@map("clientas")
+}
+
+// -------------------------------------------------------------
+// SERVICIOS (CATÁLOGO PERSONALIZADO DE CADA TRABAJADOR)
+// -------------------------------------------------------------
+model Servicio {
+  id        String   @id @default(uuid())
+  nombre    String
+  precio    Decimal  @db.Decimal(10, 2)
+  duracion  Int      @default(45) // En minutos
+  color     String   @default("#d97706") // Color identificador en calendario
+  activo    Boolean  @default(true)
+  workerId  String   @map("worker_id")
+  worker    User     @relation("WorkerServicios", fields: [workerId], references: [id], onDelete: Cascade)
+  citas     Cita[]
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([workerId])
+  @@map("servicios")
+}
+
+// -------------------------------------------------------------
+// CITAS Y AGENDA (CALENDARIO PRIVADO DE CADA TRABAJADOR)
+// -------------------------------------------------------------
+model Cita {
+  id                  String            @id @default(uuid())
+  workerId            String            @map("worker_id")
+  clientaId           String            @map("clienta_id")
+  servicioId          String            @map("servicio_id")
+  fechaHora           DateTime          @map("fecha_hora")
+  duracionMinutos     Int               @default(45) @map("duracion_minutos")
+  estado              AppointmentStatus @default(SCHEDULED)
+  precioCobrado       Decimal           @map("precio_cobrado") @db.Decimal(10, 2)
+  notas               String?           @db.Text
+  googleCalendarId    String?           @map("google_calendar_id")
+  recordatorioEnviado Boolean           @default(false) @map("recordatorio_enviado")
+  createdAt           DateTime          @default(now()) @map("created_at")
+  updatedAt           DateTime          @updatedAt @map("updated_at")
+
+  worker              User              @relation("WorkerCitas", fields: [workerId], references: [id], onDelete: Cascade)
+  clienta             Clienta           @relation(fields: [clientaId], references: [id], onDelete: Cascade)
+  servicio            Servicio          @relation(fields: [servicioId], references: [id], onDelete: Cascade)
+
+  @@index([workerId, fechaHora])
+  @@map("citas")
+}
+
+// -------------------------------------------------------------
+// GESTIÓN SAAS Y AUDITORÍA (EXCLUSIVO DEL SUPER ADMINISTRADOR)
+// -------------------------------------------------------------
+model SubscriptionPlan {
+  id           String         @id @default(uuid())
+  name         String
+  description  String?
+  price        Decimal        @db.Decimal(10, 2)
+  billingCycle BillingCycle   @map("billing_cycle")
+  maxWorkers   Int            @map("max_workers")
+  isActive     Boolean        @default(true) @map("is_active")
+  createdAt    DateTime       @default(now()) @map("created_at")
+  updatedAt    DateTime       @updatedAt @map("updated_at")
+
+  subscriptions Subscription[]
+
+  @@map("subscription_plans")
+}
+
+model Subscription {
+  id        String             @id @default(uuid())
+  userId    String             @map("user_id")
+  planId    String             @map("plan_id")
+  status    SubscriptionStatus @default(TRIALING)
+  startDate DateTime           @map("start_date")
+  endDate   DateTime           @map("end_date")
+  autoRenew Boolean            @default(true) @map("auto_renew")
+  createdAt DateTime           @default(now()) @map("created_at")
+  updatedAt DateTime           @updatedAt @map("updated_at")
+
+  user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan      SubscriptionPlan   @relation(fields: [planId], references: [id])
+
+  @@map("subscriptions")
+}
+
+model AuditLog {
+  id           String   @id @default(uuid())
+  actorId      String?  @map("actor_id")
+  action       String
+  targetEntity String   @map("target_entity")
+  targetId     String?  @map("target_id")
+  metadata     Json?
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  actor        User?    @relation(fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@map("audit_logs")
+}

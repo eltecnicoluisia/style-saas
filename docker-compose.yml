@@ -1,0 +1,39 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: style_saas_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: style_user
+      POSTGRES_PASSWORD: style_secure_password_2026
+      POSTGRES_DB: style_saas_db
+    ports:
+      - "5439:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U style_user -d style_saas_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: style_saas_app
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      DATABASE_URL: "postgresql://style_user:style_secure_password_2026@postgres:5432/style_saas_db?schema=public"
+      JWT_SECRET: "emporio-tecnologico-beauty-barber-saas-master-key-2026"
+    ports:
+      - "4000:4000"
+
+volumes:
+  postgres_data:
+    driver: local
