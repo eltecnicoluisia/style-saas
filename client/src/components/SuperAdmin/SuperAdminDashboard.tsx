@@ -223,8 +223,8 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({ user, 
         </div>
       </header>
 
-      {/* Navigation Tabs */}
-      <div className="bg-slate-900/50 border-b border-slate-800/60 px-6 flex space-x-8 overflow-x-auto">
+      {/* Navigation Tabs (Desktop / Tablet) */}
+      <div className="hidden sm:flex bg-slate-900/50 border-b border-slate-800/60 px-6 space-x-6 overflow-x-auto">
         {[
           { id: 'workers', label: 'Administración de Usuarios & Licencias', icon: Users, badge: workers.filter(w => w.status === 'PENDING_APPROVAL' || !w.license?.isActive).length },
           { id: 'subscriptions', label: 'Licencias & Planes SaaS', icon: CreditCard },
@@ -255,7 +255,7 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({ user, 
       </div>
 
       {/* Main Container */}
-      <main className="flex-1 p-6 max-w-7xl w-full mx-auto">
+      <main className="flex-1 p-3 sm:p-6 max-w-7xl w-full mx-auto pb-24 sm:pb-8">
         {loading ? (
           <div className="py-20 text-center text-slate-500 text-sm">Cargando datos de plataforma...</div>
         ) : (
@@ -263,16 +263,160 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({ user, 
             {/* Direct Tab: Usuarios y Control de Licencias */}
             {activeTab === 'workers' && (
               <div className="space-y-4">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <div>
-                    <h2 className="text-base font-bold text-white">Directorio de Usuarios y Control de Licencias</h2>
+                    <h2 className="text-base font-bold text-white flex items-center gap-2">
+                      <span>Directorio de Usuarios y Control de Licencias</span>
+                      <span className="sm:hidden px-2 py-0.5 text-[10px] bg-amber-500/20 text-amber-300 rounded-full font-mono">
+                        {workers.length}
+                      </span>
+                    </h2>
                     <p className="text-xs text-slate-400">Asigna, extiende por días/meses/años o revoca licencias de uso para cada profesional.</p>
                   </div>
-                  <span className="text-xs text-slate-400 font-mono">{workers.length} cuentas registradas</span>
+                  <span className="hidden sm:inline-block text-xs text-slate-400 font-mono">{workers.length} cuentas registradas</span>
                 </div>
 
-                <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
-                  <table className="w-full text-left text-xs">
+                {/* VISTA MÓVIL: Tarjetas adaptadas a celulares con todas las opciones visibles */}
+                <div className="block md:hidden space-y-3">
+                  {workers.map((w) => {
+                    const hasActiveLicense = w.license?.isActive;
+                    const isExpired = w.license?.isExpired;
+                    const daysLeft = w.license?.daysRemaining || 0;
+
+                    return (
+                      <div key={w.id} className="bg-slate-900 border border-slate-800/90 rounded-2xl p-4 shadow-xl space-y-3.5">
+                        {/* Cabecera de la tarjeta: Nombre y Estado */}
+                        <div className="flex items-start justify-between gap-2">
+                          <div>
+                            <div className="font-bold text-white text-sm flex items-center gap-1.5">
+                              <span>{w.firstName} {w.lastName}</span>
+                              <span className="text-[10px] text-slate-400 font-normal">({w.role === 'SUPER_ADMIN' ? 'Admin' : 'Estilista/Barbero'})</span>
+                            </div>
+                            <div className="text-xs text-slate-400">{w.email}</div>
+                          </div>
+                          <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold border shrink-0 ${
+                            w.status === 'ACTIVE'
+                              ? 'bg-emerald-950/80 text-emerald-300 border-emerald-800/60'
+                              : w.status === 'PENDING_APPROVAL'
+                              ? 'bg-amber-950/80 text-amber-300 border-amber-800/60 animate-pulse'
+                              : 'bg-red-950/80 text-red-300 border-red-800/60'
+                          }`}>
+                            {w.status === 'PENDING_APPROVAL' ? 'PENDIENTE' : w.status}
+                          </span>
+                        </div>
+
+                        {/* Datos de Acceso y Contacto */}
+                        <div className="grid grid-cols-2 gap-2 bg-slate-950/80 p-2.5 rounded-xl border border-slate-800/80 text-xs">
+                          <div>
+                            <span className="text-[10px] text-slate-500 uppercase block font-medium">Cédula (ID Login)</span>
+                            <span className="font-mono text-amber-400 font-bold text-xs">{w.nationalId}</span>
+                          </div>
+                          <div>
+                            <span className="text-[10px] text-slate-500 uppercase block font-medium">Teléfono / WhatsApp</span>
+                            <span className="text-slate-300 text-xs">{w.phone || 'N/A'}</span>
+                          </div>
+                          <div className="col-span-2 pt-1 border-t border-slate-800/60">
+                            <span className="text-[10px] text-slate-500 uppercase block font-medium">Dirección / Salón</span>
+                            <span className="text-slate-400 text-[11px] truncate block">{w.address || 'No especificada'}</span>
+                          </div>
+                        </div>
+
+                        {/* Estado de Licencia */}
+                        <div className="bg-slate-950/50 p-2.5 rounded-xl border border-slate-800/60 text-xs">
+                          <span className="text-[10px] text-slate-400 uppercase block font-semibold mb-1">Estado de Licencia:</span>
+                          {hasActiveLicense ? (
+                            <div className="flex items-center justify-between">
+                              <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-950/90 text-emerald-300 border border-emerald-800/70">
+                                <Sparkles className="w-3 h-3 text-emerald-400" />
+                                <span>Activa: {daysLeft} días</span>
+                              </span>
+                              <span className="text-[11px] text-slate-400 font-mono">
+                                Vence: {w.license?.endDate ? new Date(w.license.endDate).toLocaleDateString() : 'N/A'}
+                              </span>
+                            </div>
+                          ) : isExpired ? (
+                            <div className="flex items-center justify-between">
+                              <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-red-950/90 text-red-300 border border-red-800/70">
+                                <AlertTriangle className="w-3 h-3 text-red-400" />
+                                <span>Expirada</span>
+                              </span>
+                              <span className="text-[11px] text-red-400/80 font-mono">
+                                Venció: {w.license?.endDate ? new Date(w.license.endDate).toLocaleDateString() : 'N/A'}
+                              </span>
+                            </div>
+                          ) : (
+                            <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-slate-800 text-slate-400 border border-slate-700">
+                              <span>Sin Licencia Asignada</span>
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Botones de Acción Accesibles para Celulares */}
+                        <div className="pt-2 border-t border-slate-800/80 flex flex-wrap items-center gap-2">
+                          <button
+                            onClick={() => {
+                              setSelectedWorkerForLicense(w);
+                              setLicenseMode('QUICK');
+                              if (w.license?.endDate) {
+                                setCustomEndDate(w.license.endDate.split('T')[0]);
+                              } else {
+                                const nextMonth = new Date();
+                                nextMonth.setMonth(nextMonth.getMonth() + 1);
+                                setCustomEndDate(nextMonth.toISOString().split('T')[0]);
+                              }
+                            }}
+                            className="flex-1 min-w-[130px] py-2.5 bg-amber-600 hover:bg-amber-500 active:scale-95 text-slate-950 font-bold text-xs rounded-xl flex items-center justify-center space-x-1.5 shadow transition"
+                          >
+                            <Key className="w-4 h-4" />
+                            <span>Control Licencia</span>
+                          </button>
+
+                          {w.status === 'PENDING_APPROVAL' && (
+                            <button
+                              onClick={() => handleUpdateWorker(w.id, 'ACTIVE')}
+                              className="px-3 py-2.5 bg-emerald-700 hover:bg-emerald-600 active:scale-95 text-white rounded-xl text-xs font-bold inline-flex items-center space-x-1 shadow"
+                            >
+                              <CheckCircle2 className="w-4 h-4" />
+                              <span>Aprobar</span>
+                            </button>
+                          )}
+
+                          {w.status === 'ACTIVE' && (
+                            <button
+                              onClick={() => handleUpdateWorker(w.id, 'SUSPENDED')}
+                              className="px-3 py-2.5 bg-slate-800 hover:bg-red-950 active:scale-95 text-slate-300 hover:text-red-300 rounded-xl text-xs font-semibold inline-flex items-center space-x-1 border border-slate-700"
+                            >
+                              <XCircle className="w-4 h-4" />
+                              <span>Suspender</span>
+                            </button>
+                          )}
+
+                          {w.status === 'SUSPENDED' && (
+                            <button
+                              onClick={() => handleUpdateWorker(w.id, 'ACTIVE')}
+                              className="px-3 py-2.5 bg-slate-800 hover:bg-slate-700 active:scale-95 text-emerald-400 rounded-xl text-xs font-semibold inline-flex items-center space-x-1 border border-slate-700"
+                            >
+                              <CheckCircle2 className="w-4 h-4" />
+                              <span>Reactivar</span>
+                            </button>
+                          )}
+
+                          <button
+                            onClick={() => setWorkerToDelete(w)}
+                            className="p-2.5 bg-red-950/80 hover:bg-red-900 active:scale-95 text-red-300 rounded-xl border border-red-800/60 shadow transition"
+                            title="Eliminar usuario"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* VISTA ESCRITORIO: Tabla completa con scroll horizontal seguro */}
+                <div className="hidden md:block bg-slate-900 border border-slate-800 rounded-2xl overflow-x-auto shadow-xl">
+                  <table className="w-full text-left text-xs min-w-[700px]">
                     <thead className="bg-slate-950/80 text-slate-400 uppercase tracking-wider font-semibold border-b border-slate-800">
                       <tr>
                         <th className="p-4">Usuario</th>
@@ -909,7 +1053,47 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({ user, 
             </form>
           </div>
         </div>
-      )}
+      {/* Mobile Bottom Navigation Bar */}
+      <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-900/95 border-t border-slate-800 backdrop-blur-lg px-2 py-2 flex items-center justify-around shadow-2xl">
+        {[
+          { id: 'workers', label: 'Usuarios', icon: Users, badge: workers.filter(w => w.status === 'PENDING_APPROVAL' || !w.license?.isActive).length },
+          { id: 'subscriptions', label: 'Licencias', icon: CreditCard },
+          { id: 'overview', label: 'Métricas', icon: TrendingUp },
+          { id: 'audit', label: 'Auditoría', icon: Activity },
+        ].map((tab) => {
+          const Icon = tab.icon;
+          const isActive = activeTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as any)}
+              className={`flex-1 flex flex-col items-center justify-center py-1 rounded-xl transition relative ${
+                isActive ? 'text-amber-400 font-bold' : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              <div className="relative">
+                <Icon className={`w-5 h-5 ${isActive ? 'text-amber-400' : 'text-slate-400'}`} />
+                {tab.badge !== undefined && tab.badge > 0 && (
+                  <span className="absolute -top-1 -right-2 px-1 text-[9px] bg-amber-500 text-slate-950 font-bold rounded-full">
+                    {tab.badge}
+                  </span>
+                )}
+              </div>
+              <span className="text-[10px] mt-0.5 tracking-tight">{tab.label}</span>
+            </button>
+          );
+        })}
+
+        <button
+          onClick={() => setShowCreateWorkerModal(true)}
+          className="flex-1 flex flex-col items-center justify-center py-1 text-amber-500 hover:text-amber-400 transition"
+        >
+          <div className="w-6 h-6 rounded-full bg-amber-500 text-slate-950 flex items-center justify-center shadow">
+            <UserPlus className="w-3.5 h-3.5" />
+          </div>
+          <span className="text-[10px] mt-0.5 font-bold text-amber-400">+Nuevo</span>
+        </button>
+      </nav>
     </div>
   );
 };
