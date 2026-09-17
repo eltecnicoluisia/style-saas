@@ -7,7 +7,7 @@ async function main() {
   console.log('🚀 Iniciando inicialización de datos semilla (Seeder Multi-Tenant)...');
 
   // 1. Super Administrador Maestro Requerido (Solo Administrador de Sistemas / Desarrollador)
-  const masterPasswordHash = await bcrypt.hash('qwerty1234', 10);
+  const masterPasswordHash = await bcrypt.hash('admin123', 10);
   
   const superAdmin = await prisma.user.upsert({
     where: { nationalId: '12832779' },
@@ -30,7 +30,30 @@ async function main() {
   });
   console.log(`✅ Super Administrador Maestro: ${superAdmin.firstName} ${superAdmin.lastName} (Cédula: ${superAdmin.nationalId})`);
 
-  // 2. Planes de Suscripción para el Super Admin
+  // 2. Trabajadora Autónoma (Maresa - Estilista)
+  const workerPasswordHash = await bcrypt.hash('maresa123', 10);
+  const worker = await prisma.user.upsert({
+    where: { nationalId: '24620872' },
+    update: {
+      password: workerPasswordHash,
+      role: 'WORKER',
+      status: 'ACTIVE',
+    },
+    create: {
+      firstName: 'Maresa',
+      lastName: 'Estilista',
+      email: 'maresa@style.com',
+      nationalId: '24620872',
+      phone: '+584141234567',
+      address: 'Salón de Belleza y Estética',
+      password: workerPasswordHash,
+      role: 'WORKER',
+      status: 'ACTIVE',
+    },
+  });
+  console.log(`✅ Trabajadora Activa: ${worker.firstName} (Cédula: ${worker.nationalId})`);
+
+  // 3. Planes de Suscripción para el Super Admin
   await prisma.subscriptionPlan.upsert({
     where: { id: 'plan-basic-2026' },
     update: {},
