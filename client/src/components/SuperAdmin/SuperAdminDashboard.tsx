@@ -1053,6 +1053,8 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({ user, 
             </form>
           </div>
         </div>
+      )}
+
       {/* Mobile Bottom Navigation Bar */}
       <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-900/95 border-t border-slate-800 backdrop-blur-lg px-2 py-2 flex items-center justify-around shadow-2xl">
         {[
