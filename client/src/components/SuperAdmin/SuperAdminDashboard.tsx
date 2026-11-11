@@ -206,8 +206,8 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({ user, 
       {/* Header SysAdmin */}
       <header className="bg-slate-900 border-b border-slate-800 px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 sticky top-0 z-30">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-xl bg-slate-900 border border-slate-700/80 flex items-center justify-center shadow-md p-1.5 flex-shrink-0">
-            <img src="./favicon.png" alt="Informáticos Venezuela" className="w-full h-full object-contain" />
+          <div className="w-10 h-10 rounded-full bg-slate-900 border border-slate-700/80 flex items-center justify-center shadow-md p-1 flex-shrink-0 overflow-hidden">
+            <img src="./logo_emblem.svg" alt="Informáticos Venezuela" className="w-full h-full object-contain rounded-full" />
           </div>
           <div>
             <h1 className="text-lg font-bold tracking-tight text-white flex items-center space-x-2">

@@ -387,8 +387,8 @@ export const WorkerDashboard: React.FC<WorkerDashboardProps> = ({ user, onLogout
       <header className="bg-slate-900 border-b border-slate-800 px-3 sm:px-6 py-3 sm:py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sticky top-0 z-30 shadow-md">
         <div className="flex items-center justify-between sm:justify-start space-x-3 w-full sm:w-auto">
           <div className="flex items-center space-x-2.5">
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-900 border border-slate-700/80 flex items-center justify-center shadow-md flex-shrink-0 p-1.5">
-              <img src="./favicon.png" alt="Informáticos Venezuela" className="w-full h-full object-contain" />
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-slate-900 border border-slate-700/80 flex items-center justify-center shadow-md flex-shrink-0 p-1 overflow-hidden">
+              <img src="./logo_emblem.svg" alt="Informáticos Venezuela" className="w-full h-full object-contain rounded-full" />
             </div>
             <div>
               <h1 className="text-sm sm:text-lg font-bold tracking-tight text-white flex items-center space-x-1.5">
