@@ -1,6 +1,6 @@
 const getApiBase = () => {
   if (typeof window !== 'undefined' && window.location.hostname.includes('github.io')) {
-    return localStorage.getItem('saas_api_url') || 'https://internship-donors-fusion-holders.trycloudflare.com/api';
+    return localStorage.getItem('saas_api_url') || '/api';
   }
   return '/api';
 };
@@ -52,6 +52,8 @@ export const api = {
     api.request('/auth/login', { method: 'POST', body: JSON.stringify(credentials) }),
   register: (userData: any) =>
     api.request('/auth/register', { method: 'POST', body: JSON.stringify(userData) }),
+  resetPassword: (payload: { nationalId: string; email: string; newPassword: string }) =>
+    api.request('/auth/reset-password', { method: 'POST', body: JSON.stringify(payload) }),
 
   // Tasa de Cambio Oficial BCV en Tiempo Real
   getExchangeRate: () => api.request('/exchange/rate'),

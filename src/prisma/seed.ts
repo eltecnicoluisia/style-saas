@@ -11,11 +11,8 @@ async function main() {
   
   const superAdmin = await prisma.user.upsert({
     where: { nationalId: '12832779' },
-    update: {
-      password: masterPasswordHash,
-      role: 'SUPER_ADMIN',
-      status: 'ACTIVE',
-    },
+    // NO sobreescribir contraseñas ni datos si el usuario ya existe en base de datos
+    update: {},
     create: {
       firstName: 'Luis',
       lastName: 'Uzcategui',
@@ -34,11 +31,8 @@ async function main() {
   const workerPasswordHash = await bcrypt.hash('maresa123', 10);
   const worker = await prisma.user.upsert({
     where: { nationalId: '24620872' },
-    update: {
-      password: workerPasswordHash,
-      role: 'WORKER',
-      status: 'ACTIVE',
-    },
+    // NO sobreescribir contraseñas ni datos si la cuenta ya existe
+    update: {},
     create: {
       firstName: 'Maresa',
       lastName: 'Estilista',

@@ -4,15 +4,16 @@ services:
     container_name: style_saas_postgres
     restart: always
     environment:
-      POSTGRES_USER: style_user
-      POSTGRES_PASSWORD: style_secure_password_2026
-      POSTGRES_DB: style_saas_db
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - "5439:5432"
+      # Puerto restringido al host local para evitar exposición pública en 0.0.0.0
+      - "127.0.0.1:5439:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U style_user -d style_saas_db"]
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -29,10 +30,11 @@ services:
     environment:
       NODE_ENV: production
       PORT: 4000
-      DATABASE_URL: "postgresql://style_user:style_secure_password_2026@postgres:5432/style_saas_db?schema=public"
-      JWT_SECRET: "emporio-tecnologico-beauty-barber-saas-master-key-2026"
+      DATABASE_URL: ${DATABASE_URL}
+      JWT_SECRET: ${JWT_SECRET}
     ports:
-      - "4000:4000"
+      # Puerto de la aplicación restringido a localhost
+      - "127.0.0.1:4000:4000"
 
 volumes:
   postgres_data:

@@ -2,7 +2,7 @@
 set -e
 
 echo "🔄 Sincronizando esquema de base de datos con PostgreSQL..."
-npx prisma db push --skip-generate --accept-data-loss
+npx prisma db push --skip-generate
 
 echo "🌱 Ejecutando Seeder de inicialización (Super Administrador Luis Uzcategui)..."
 node dist/prisma/seed.js || npx tsx src/prisma/seed.ts

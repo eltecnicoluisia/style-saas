@@ -11,14 +11,9 @@ router.use(authenticateJWT);
 router.use(requireRoles('SUPER_ADMIN'));
 
 // 1. Listar Usuarios Registrados con Estado de Licencia Detallado
-router.get('/workers', async (req: AuthenticatedRequest, res: Response) => {
+router.get('/workers', async (_req: AuthenticatedRequest, res: Response) => {
   try {
-    const { status } = req.query;
-    const whereCondition: any = { role: 'WORKER' };
-    if (status) whereCondition.status = status;
-
     const workers = await prisma.user.findMany({
-      where: whereCondition,
       select: {
         id: true,
         firstName: true,
@@ -27,6 +22,7 @@ router.get('/workers', async (req: AuthenticatedRequest, res: Response) => {
         nationalId: true,
         phone: true,
         address: true,
+        role: true,
         status: true,
         createdAt: true,
         subscriptions: {
@@ -84,7 +80,8 @@ router.get('/workers', async (req: AuthenticatedRequest, res: Response) => {
 
     return res.json({ success: true, workers: formattedWorkers });
   } catch (error: any) {
-    return res.status(500).json({ success: false, message: 'Error al obtener usuarios', error: error.message });
+    console.error('Error al obtener usuarios:', error);
+    return res.status(500).json({ success: false, message: 'Error al obtener usuarios' });
   }
 });
 
@@ -105,6 +102,7 @@ router.post('/workers/:workerId/license', async (req: AuthenticatedRequest, res:
       where: { id: workerId },
       include: {
         subscriptions: {
+          where: { status: 'ACTIVE' },
           orderBy: { endDate: 'desc' },
           take: 1,
         }
@@ -115,7 +113,7 @@ router.post('/workers/:workerId/license', async (req: AuthenticatedRequest, res:
       return res.status(404).json({ success: false, message: 'Usuario no encontrado' });
     }
 
-    // Obtener o crear un plan estándar de referencia
+    // Buscar o crear plan estándar por defecto
     let defaultPlan = await prisma.subscriptionPlan.findFirst({
       where: { isActive: true }
     });
@@ -123,8 +121,9 @@ router.post('/workers/:workerId/license', async (req: AuthenticatedRequest, res:
     if (!defaultPlan) {
       defaultPlan = await prisma.subscriptionPlan.create({
         data: {
+          id: 'plan-basic-2026',
           name: 'Licencia Profesional Multi-Tenant',
-          description: 'Acceso a gestión de clientas, servicios y agenda privada',
+          description: 'Gestión ilimitada para centros de estética y barberías',
           price: 19.99,
           billingCycle: 'MONTHLY',
           maxWorkers: 1,
@@ -133,36 +132,24 @@ router.post('/workers/:workerId/license', async (req: AuthenticatedRequest, res:
     }
 
     const now = new Date();
-    const latestSub = targetUser.subscriptions[0];
-    
-    // Si la unidad es sumar días/meses/años y tiene suscripción activa no vencida, extendemos desde esa fecha
-    let baseDate = new Date(now);
-    if (unit !== 'CUSTOM' && latestSub && latestSub.status === 'ACTIVE' && new Date(latestSub.endDate) > now) {
-      baseDate = new Date(latestSub.endDate);
-    }
+    let calculatedEndDate = new Date();
 
-    let calculatedEndDate = new Date(baseDate);
+    const currentActiveSub = targetUser.subscriptions[0];
+    if (currentActiveSub && new Date(currentActiveSub.endDate) > now) {
+      calculatedEndDate = new Date(currentActiveSub.endDate);
+    }
 
     if (unit === 'DAYS') {
       calculatedEndDate.setDate(calculatedEndDate.getDate() + amount);
-      calculatedEndDate.setHours(23, 59, 59, 999);
     } else if (unit === 'MONTHS') {
       calculatedEndDate.setMonth(calculatedEndDate.getMonth() + amount);
-      calculatedEndDate.setHours(23, 59, 59, 999);
     } else if (unit === 'YEARS') {
       calculatedEndDate.setFullYear(calculatedEndDate.getFullYear() + amount);
-      calculatedEndDate.setHours(23, 59, 59, 999);
     } else if (unit === 'CUSTOM' && customEndDate) {
-      const parts = customEndDate.split('-');
-      if (parts.length === 3) {
-        calculatedEndDate = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]), 23, 59, 59, 999);
-      } else {
-        calculatedEndDate = new Date(customEndDate);
-        calculatedEndDate.setHours(23, 59, 59, 999);
-      }
+      calculatedEndDate = new Date(customEndDate);
     }
 
-    // Cancelar cualquier suscripción activa anterior para mantener una sola activa limpia
+    // Cancelar licencias previas activas
     await prisma.subscription.updateMany({
       where: { userId: workerId, status: 'ACTIVE' },
       data: { status: 'CANCELLED' }
@@ -221,7 +208,8 @@ router.post('/workers/:workerId/license', async (req: AuthenticatedRequest, res:
     if (error instanceof z.ZodError) {
       return res.status(400).json({ success: false, errors: error.errors });
     }
-    return res.status(500).json({ success: false, message: 'Error al gestionar licencia', error: error.message });
+    console.error('Error al gestionar licencia:', error);
+    return res.status(500).json({ success: false, message: 'Error al gestionar licencia' });
   }
 });
 
@@ -247,11 +235,12 @@ router.post('/workers/:workerId/license/revoke', async (req: AuthenticatedReques
 
     return res.json({ success: true, message: 'Licencia revocada con éxito.', count: updated.count });
   } catch (error: any) {
-    return res.status(500).json({ success: false, message: 'Error al revocar licencia', error: error.message });
+    console.error('Error al revocar licencia:', error);
+    return res.status(500).json({ success: false, message: 'Error al revocar licencia' });
   }
 });
 
-// 4. Registrar Trabajador Directamente desde el Panel Super Admin (con opción de asignar licencia inicial)
+// 4. Registrar Trabajador Directamente desde el Panel Super Admin
 const createWorkerSchema = z.object({
   firstName: z.string().min(2),
   lastName: z.string().min(2),
@@ -307,7 +296,7 @@ router.post('/workers', async (req: AuthenticatedRequest, res: Response) => {
       }
     });
 
-    // Si se especificó licencia inicial > 0 meses, asignarla automáticamente
+    // Asignar licencia inicial si se requirió
     if (data.initialLicenseMonths > 0) {
       let defaultPlan = await prisma.subscriptionPlan.findFirst({ where: { isActive: true } });
       if (!defaultPlan) {
@@ -351,11 +340,13 @@ router.post('/workers', async (req: AuthenticatedRequest, res: Response) => {
     if (error instanceof z.ZodError) {
       return res.status(400).json({ success: false, errors: error.errors });
     }
-    return res.status(500).json({ success: false, message: 'Error al crear trabajador', error: error.message });
+    console.error('Error al crear trabajador:', error);
+    return res.status(500).json({ success: false, message: 'Error al crear trabajador' });
   }
 });
 
 // 5. Aprobación y Modificación de Estado (Activar / Suspender)
+// Protección estricta: No se permite auto-suspensión ni suspender/modificar cuentas SUPER_ADMIN
 const updateWorkerStatusSchema = z.object({
   status: z.enum(['ACTIVE', 'SUSPENDED', 'INACTIVE', 'PENDING_APPROVAL']),
 });
@@ -365,9 +356,25 @@ router.patch('/workers/:workerId/status', async (req: AuthenticatedRequest, res:
     const { workerId } = req.params;
     const { status } = updateWorkerStatusSchema.parse(req.body);
 
+    // Protección 1: No permitir que el Super Admin se auto-suspenda o modifique su propio estado
+    if (req.user?.userId === workerId) {
+      return res.status(400).json({
+        success: false,
+        message: 'Acción no permitida: No puedes modificar ni suspender tu propio estado de administrador.',
+      });
+    }
+
     const targetUser = await prisma.user.findUnique({ where: { id: workerId } });
     if (!targetUser) {
       return res.status(404).json({ success: false, message: 'Usuario no encontrado' });
+    }
+
+    // Protección 2: No permitir suspender o alterar estados de cuentas SUPER_ADMIN
+    if (targetUser.role === 'SUPER_ADMIN') {
+      return res.status(403).json({
+        success: false,
+        message: 'Acción denegada: No se puede modificar ni suspender el estado de un Super Administrador del Sistema.',
+      });
     }
 
     const updatedUser = await prisma.user.update({
@@ -399,7 +406,8 @@ router.patch('/workers/:workerId/status', async (req: AuthenticatedRequest, res:
     if (error instanceof z.ZodError) {
       return res.status(400).json({ success: false, errors: error.errors });
     }
-    return res.status(500).json({ success: false, message: 'Error al actualizar estado', error: error.message });
+    console.error('Error al actualizar estado:', error);
+    return res.status(500).json({ success: false, message: 'Error al actualizar estado' });
   }
 });
 
@@ -410,7 +418,7 @@ router.get('/metrics', async (_req: AuthenticatedRequest, res: Response) => {
     const pendingWorkers = await prisma.user.count({ where: { role: 'WORKER', status: 'PENDING_APPROVAL' } });
     const activeWorkers = await prisma.user.count({ where: { role: 'WORKER', status: 'ACTIVE' } });
     const suspendedWorkers = await prisma.user.count({ where: { role: 'WORKER', status: 'SUSPENDED' } });
-    
+
     // Licencias activas reales (no vencidas)
     const activeSubscriptions = await prisma.subscription.count({
       where: {
@@ -433,40 +441,39 @@ router.get('/metrics', async (_req: AuthenticatedRequest, res: Response) => {
       }
     });
   } catch (error: any) {
-    return res.status(500).json({ success: false, message: 'Error al obtener métricas', error: error.message });
+    console.error('Error al obtener métricas:', error);
+    return res.status(500).json({ success: false, message: 'Error al obtener métricas' });
   }
 });
 
-// 7. Registros de Auditoría
-router.get('/audit-logs', async (req: AuthenticatedRequest, res: Response) => {
+// 7. Registro de Auditoría del Sistema
+router.get('/audit-logs', async (_req: AuthenticatedRequest, res: Response) => {
   try {
-    const limit = Number(req.query.limit) || 100;
     const logs = await prisma.auditLog.findMany({
-      take: limit,
+      take: 50,
       orderBy: { createdAt: 'desc' },
       include: {
         actor: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            nationalId: true,
-            role: true,
-          }
+          select: { firstName: true, lastName: true, nationalId: true, role: true }
         }
       }
     });
 
-    return res.json({ success: true, count: logs.length, logs });
+    return res.json({ success: true, logs });
   } catch (error: any) {
-    return res.status(500).json({ success: false, message: 'Error al obtener auditoría', error: error.message });
+    console.error('Error al obtener auditoría:', error);
+    return res.status(500).json({ success: false, message: 'Error al obtener registros de auditoría' });
   }
 });
 
-// 8. Eliminar Usuario / Trabajador Permanentemente
+// 8. Eliminación Definitiva de Cuenta de Trabajador
 router.delete('/workers/:workerId', async (req: AuthenticatedRequest, res: Response) => {
   try {
     const { workerId } = req.params;
+
+    if (req.user?.userId === workerId) {
+      return res.status(400).json({ success: false, message: 'No puedes eliminar tu propia cuenta de administrador' });
+    }
 
     const targetUser = await prisma.user.findUnique({
       where: { id: workerId }
@@ -477,10 +484,9 @@ router.delete('/workers/:workerId', async (req: AuthenticatedRequest, res: Respo
     }
 
     if (targetUser.role === 'SUPER_ADMIN') {
-      return res.status(400).json({ success: false, message: 'No se puede eliminar la cuenta de Super Administrador del Sistema' });
+      return res.status(403).json({ success: false, message: 'No se puede eliminar la cuenta de Super Administrador del Sistema' });
     }
 
-    // Registrar en auditoría antes de eliminar
     await prisma.auditLog.create({
       data: {
         actorId: req.user!.userId,
@@ -495,7 +501,6 @@ router.delete('/workers/:workerId', async (req: AuthenticatedRequest, res: Respo
       }
     });
 
-    // Eliminar usuario (las relaciones con clientas, citas, servicios y suscripciones se eliminan en cascada)
     await prisma.user.delete({
       where: { id: workerId }
     });
@@ -505,7 +510,8 @@ router.delete('/workers/:workerId', async (req: AuthenticatedRequest, res: Respo
       message: `Usuario ${targetUser.firstName} ${targetUser.lastName} (Cédula: ${targetUser.nationalId}) eliminado permanentemente.`
     });
   } catch (error: any) {
-    return res.status(500).json({ success: false, message: 'Error al eliminar usuario', error: error.message });
+    console.error('Error al eliminar usuario:', error);
+    return res.status(500).json({ success: false, message: 'Error al eliminar usuario' });
   }
 });
 

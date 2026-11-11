@@ -2,10 +2,35 @@ import { Router, Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { z } from 'zod';
+import rateLimit from 'express-rate-limit';
 import { prisma } from '../config/prisma.js';
+import { JWT_SECRET } from '../config/jwt.js';
 
 const router = Router();
-const JWT_SECRET = process.env.JWT_SECRET || 'secret-key-emporio-saas-2026';
+
+// Rate limiter específico para login (protección contra fuerza bruta: 10 intentos por cada 15 min por IP)
+export const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: 'Demasiados intentos de acceso fallidos desde esta dirección IP. Por favor, espere 15 minutos antes de volver a intentar.',
+  },
+});
+
+// Rate limiter para registro (anti-spam de creación de cuentas: 10 registros por cada 15 min por IP)
+export const registerLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: 'Demasiadas solicitudes de registro desde esta dirección IP. Intente de nuevo más tarde.',
+  },
+});
 
 const registerSchema = z.object({
   firstName: z.string().min(2, 'El nombre es obligatorio'),
@@ -14,8 +39,12 @@ const registerSchema = z.object({
   nationalId: z.string().min(4, 'Número de cédula inválido'),
   phone: z.string().min(7, 'Número de celular inválido'),
   address: z.string().min(3, 'Dirección obligatoria'),
-  password: z.string().min(6, 'La contraseña debe tener mínimo 6 caracteres'),
-  role: z.enum(['WORKER']).default('WORKER'),
+  password: z.string()
+    .min(8, 'La contraseña debe tener al menos 8 caracteres')
+    .regex(/[A-Z]/, 'La contraseña debe incluir al menos una letra mayúscula')
+    .regex(/[a-z]/, 'La contraseña debe incluir al menos una letra minúscula')
+    .regex(/[0-9]/, 'La contraseña debe incluir al menos un número'),
+  role: z.enum(['WORKER', 'CLIENT']).default('WORKER'),
 });
 
 const loginSchema = z.object({
@@ -24,7 +53,7 @@ const loginSchema = z.object({
 });
 
 // Registro Centralizado de Trabajadores / Inquilinos
-router.post('/register', async (req: Request, res: Response) => {
+router.post('/register', registerLimiter, async (req: Request, res: Response) => {
   try {
     const validatedData = registerSchema.parse(req.body);
 
@@ -93,12 +122,13 @@ router.post('/register', async (req: Request, res: Response) => {
     if (error instanceof z.ZodError) {
       return res.status(400).json({ success: false, errors: error.errors });
     }
-    return res.status(500).json({ success: false, message: 'Error en el servidor al procesar el registro', error: error.message });
+    console.error('Error al registrar usuario:', error);
+    return res.status(500).json({ success: false, message: 'Error en el servidor al procesar el registro' });
   }
 });
 
 // Login Centralizado (Acceso mediante Cédula)
-router.post('/login', async (req: Request, res: Response) => {
+router.post('/login', loginLimiter, async (req: Request, res: Response) => {
   try {
     const { nationalId, password } = loginSchema.parse(req.body);
 
@@ -190,7 +220,79 @@ router.post('/login', async (req: Request, res: Response) => {
     if (error instanceof z.ZodError) {
       return res.status(400).json({ success: false, errors: error.errors });
     }
-    return res.status(500).json({ success: false, message: 'Error en el inicio de sesión', error: error.message });
+    console.error('Error en login:', error);
+    return res.status(500).json({ success: false, message: 'Error en el inicio de sesión' });
+  }
+});
+
+const resetPasswordSchema = z.object({
+  nationalId: z.string().min(4, 'Número de cédula inválido'),
+  email: z.string().email('Correo electrónico inválido'),
+  newPassword: z.string()
+    .min(8, 'La nueva contraseña debe tener al menos 8 caracteres')
+    .regex(/[A-Z]/, 'Debe incluir al menos una mayúscula')
+    .regex(/[a-z]/, 'Debe incluir al menos una minúscula')
+    .regex(/[0-9]/, 'Debe incluir al menos un número'),
+});
+
+// Endpoint seguro de Restablecimiento de Contraseña (Verificación de Identidad: Cédula + Email registrado)
+router.post('/reset-password', loginLimiter, async (req: Request, res: Response) => {
+  try {
+    const { nationalId, email, newPassword } = resetPasswordSchema.parse(req.body);
+
+    const user = await prisma.user.findFirst({
+      where: {
+        nationalId: nationalId.trim(),
+        email: email.trim().toLowerCase(),
+      },
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'No se encontró ninguna cuenta que coincida con esa cédula y correo electrónico.',
+      });
+    }
+
+    if (user.status === 'SUSPENDED' || user.status === 'INACTIVE') {
+      return res.status(403).json({
+        success: false,
+        message: 'Tu cuenta se encuentra suspendida. Contacta al Administrador de Sistemas.',
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { password: hashedPassword },
+    });
+
+    // Registrar en auditoría
+    await prisma.auditLog.create({
+      data: {
+        actorId: user.id,
+        action: 'PASSWORD_RESET_SELF',
+        targetEntity: 'User',
+        targetId: user.id,
+        metadata: {
+          nationalId: user.nationalId,
+          email: user.email,
+          ip: req.ip,
+        },
+      },
+    });
+
+    return res.json({
+      success: true,
+      message: '¡Contraseña restablecida con éxito! Ya puedes iniciar sesión con tu nueva contraseña.',
+    });
+  } catch (error: any) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({ success: false, errors: error.errors });
+    }
+    console.error('Error al restablecer contraseña:', error);
+    return res.status(500).json({ success: false, message: 'Error en el servidor al restablecer contraseña' });
   }
 });
 
