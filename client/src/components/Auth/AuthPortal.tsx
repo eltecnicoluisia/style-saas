@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { api } from '../../services/api';
 import { UserCheck, Sparkles, ArrowRight, Lock, User, Mail, Phone, MapPin, IdCard, CheckCircle2, XCircle, ShieldCheck, KeyRound, ArrowLeft } from 'lucide-react';
+import { AestheticFloatingVectors } from './AestheticFloatingVectors';
 
 interface AuthPortalProps {
   onLoginSuccess: (user: any) => void;
@@ -104,18 +105,28 @@ export const AuthPortal: React.FC<AuthPortalProps> = ({ onLoginSuccess }) => {
 
   return (
     <div className="min-h-screen bg-slate-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
+      {/* Canvas 2D de Vectores Estéticos Flotantes (32 figuras temáticas de Belleza, Barbería y Estética) */}
+      <AestheticFloatingVectors />
+
       {/* Background Glows */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-brand-600/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-10 right-10 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center z-10">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-brand-700 to-amber-600 text-white shadow-xl shadow-brand-900/30 mb-4 border border-brand-500/30">
-          <Sparkles className="w-8 h-8 text-amber-200" />
+        <div className="inline-flex items-center justify-center mb-3">
+          <img
+            src="./logo_oficial.png"
+            alt="Informáticos Venezuela"
+            className="h-16 w-auto object-contain drop-shadow-[0_8px_20px_rgba(245,158,11,0.25)] hover:scale-105 transition-transform"
+          />
         </div>
         <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
           STYLE <span className="bg-gradient-to-r from-amber-400 to-brand-400 bg-clip-text text-transparent">SAAS</span>
         </h2>
-        <p className="mt-2 text-sm text-slate-400 font-medium">
+        <p className="mt-1 text-xs text-amber-400/90 font-semibold tracking-wider uppercase">
+          Informáticos Venezuela
+        </p>
+        <p className="mt-1 text-sm text-slate-400 font-medium">
           Plataforma Integral de Gestión para Centros de Estética y Barberías
         </p>
       </div>
