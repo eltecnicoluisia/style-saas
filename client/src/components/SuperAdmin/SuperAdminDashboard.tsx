@@ -68,6 +68,27 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({ user, 
   const [customEndDate, setCustomEndDate] = useState<string>('');
   const [licenseActionLoading, setLicenseActionLoading] = useState(false);
 
+  // Modal: Restablecer Contraseña de Usuario desde SysAdmin
+  const [workerToResetPass, setWorkerToResetPass] = useState<User | null>(null);
+  const [adminNewPass, setAdminNewPass] = useState('');
+  const [adminResetLoading, setAdminResetLoading] = useState(false);
+
+  const handleAdminResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!workerToResetPass) return;
+    setAdminResetLoading(true);
+    try {
+      const res = await api.adminResetPassword(workerToResetPass.id, adminNewPass);
+      showToast(res.message || 'Contraseña restablecida con éxito', 'success');
+      setWorkerToResetPass(null);
+      setAdminNewPass('');
+    } catch (err: any) {
+      showToast(err.message || 'Error al restablecer la contraseña', 'error');
+    } finally {
+      setAdminResetLoading(false);
+    }
+  };
+
   const loadData = async () => {
     setLoading(true);
     try {
@@ -402,6 +423,18 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({ user, 
                           )}
 
                           <button
+                            onClick={() => {
+                              setWorkerToResetPass(w);
+                              setAdminNewPass('');
+                            }}
+                            className="px-3 py-2.5 bg-slate-800 hover:bg-slate-700 active:scale-95 text-slate-200 rounded-xl text-xs font-semibold inline-flex items-center space-x-1 border border-slate-700"
+                            title="Cambiar contraseña de este usuario"
+                          >
+                            <Key className="w-3.5 h-3.5 text-amber-400" />
+                            <span>Clave</span>
+                          </button>
+
+                          <button
                             onClick={() => setWorkerToDelete(w)}
                             className="p-2.5 bg-red-950/80 hover:bg-red-900 active:scale-95 text-red-300 rounded-xl border border-red-800/60 shadow transition"
                             title="Eliminar usuario"
@@ -530,6 +563,18 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({ user, 
                                   <span>Reactivar</span>
                                 </button>
                               )}
+
+                              <button
+                                onClick={() => {
+                                  setWorkerToResetPass(w);
+                                  setAdminNewPass('');
+                                }}
+                                className="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg font-semibold inline-flex items-center space-x-1 border border-slate-700"
+                                title="Cambiar contraseña de este usuario"
+                              >
+                                <Key className="w-3.5 h-3.5 text-amber-400" />
+                                <span>Clave</span>
+                              </button>
 
                               <button
                                 onClick={() => setWorkerToDelete(w)}
@@ -908,6 +953,62 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({ user, 
                 Cerrar
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal: Cambiar Contraseña de Usuario por SysAdmin */}
+      {workerToResetPass && (
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl shadow-2xl p-6 relative">
+            <button
+              onClick={() => setWorkerToResetPass(null)}
+              className="absolute top-5 right-5 text-slate-400 hover:text-white"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="flex items-center space-x-2 text-amber-400 mb-1">
+              <Key className="w-5 h-5" />
+              <h2 className="text-lg font-bold text-white">Restablecer Contraseña</h2>
+            </div>
+            <p className="text-xs text-slate-400 mb-4">
+              Asignar una nueva clave a <strong className="text-white">{workerToResetPass.firstName} {workerToResetPass.lastName}</strong> (Cédula: <span className="font-mono text-amber-400">{workerToResetPass.nationalId}</span>).
+            </p>
+
+            <form onSubmit={handleAdminResetPassword} className="space-y-4 text-xs">
+              <div>
+                <label className="block text-slate-300 font-medium mb-1">Nueva Contraseña para el Usuario</label>
+                <input
+                  type="text"
+                  required
+                  value={adminNewPass}
+                  onChange={(e) => setAdminNewPass(e.target.value)}
+                  placeholder="Mínimo 8 caract., Mayús, Minús y Número"
+                  className="w-full px-3 py-2.5 bg-slate-950 border border-slate-700 rounded-lg text-white font-mono text-sm focus:outline-none focus:border-amber-500"
+                />
+                <p className="text-[11px] text-slate-500 mt-1.5">
+                  Requisitos: mínimo 8 caracteres, al menos una mayúscula, una minúscula y un número.
+                </p>
+              </div>
+
+              <div className="pt-2 flex justify-end space-x-2">
+                <button
+                  type="button"
+                  onClick={() => setWorkerToResetPass(null)}
+                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg font-semibold"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  disabled={adminResetLoading || adminNewPass.length < 8}
+                  className="px-5 py-2 bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold rounded-lg shadow disabled:opacity-40"
+                >
+                  {adminResetLoading ? 'Guardando...' : 'Guardar Nueva Contraseña'}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

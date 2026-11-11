@@ -411,6 +411,58 @@ router.patch('/workers/:workerId/status', async (req: AuthenticatedRequest, res:
   }
 });
 
+// 5.1. Restablecer / Asignar Contraseña a un Usuario (Exclusivo Super Admin)
+const adminResetPasswordSchema = z.object({
+  newPassword: z.string()
+    .min(8, 'La nueva contraseña debe tener al menos 8 caracteres')
+    .regex(/[A-Z]/, 'Debe incluir al menos una mayúscula')
+    .regex(/[a-z]/, 'Debe incluir al menos una minúscula')
+    .regex(/[0-9]/, 'Debe incluir al menos un número'),
+});
+
+router.post('/workers/:workerId/reset-password', async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const { workerId } = req.params;
+    const { newPassword } = adminResetPasswordSchema.parse(req.body);
+
+    const targetUser = await prisma.user.findUnique({ where: { id: workerId } });
+    if (!targetUser) {
+      return res.status(404).json({ success: false, message: 'Usuario no encontrado' });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    await prisma.user.update({
+      where: { id: workerId },
+      data: { password: hashedPassword },
+    });
+
+    await prisma.auditLog.create({
+      data: {
+        actorId: req.user!.userId,
+        action: 'PASSWORD_RESET_BY_ADMIN',
+        targetEntity: 'User',
+        targetId: workerId,
+        metadata: {
+          targetNationalId: targetUser.nationalId,
+          targetEmail: targetUser.email,
+        },
+      },
+    });
+
+    return res.json({
+      success: true,
+      message: `Contraseña de ${targetUser.firstName} ${targetUser.lastName} (Cédula: ${targetUser.nationalId}) restablecida con éxito.`,
+    });
+  } catch (error: any) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({ success: false, errors: error.errors });
+    }
+    console.error('Error al restablecer contraseña desde admin:', error);
+    return res.status(500).json({ success: false, message: 'Error en el servidor al restablecer contraseña' });
+  }
+});
+
 // 6. Métricas de Plataforma (Exclusivas de Infraestructura & Administración)
 router.get('/metrics', async (_req: AuthenticatedRequest, res: Response) => {
   try {

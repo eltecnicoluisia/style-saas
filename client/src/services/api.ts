@@ -71,6 +71,8 @@ export const api = {
     api.request(`/admin/workers/${workerId}/license/revoke`, { method: 'POST' }),
   deleteWorker: (workerId: string) =>
     api.request(`/admin/workers/${workerId}`, { method: 'DELETE' }),
+  adminResetPassword: (workerId: string, newPassword: string) =>
+    api.request(`/admin/workers/${workerId}/reset-password`, { method: 'POST', body: JSON.stringify({ newPassword }) }),
   getAuditLogs: () => api.request('/admin/audit-logs'),
   getMetrics: () => api.request('/admin/metrics'),
   getPlans: () => api.request('/subscriptions/plans'),
