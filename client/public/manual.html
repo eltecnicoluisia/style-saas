@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manual de Usuario — Style SaaS (Informáticos Venezuela)</title>
+  <link rel="icon" type="image/svg+xml" href="./logo_emblem.svg">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #050914;
+      color: #E2E8F0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      line-height: 1.6;
+      padding: 0;
+    }
+    header {
+      background: rgba(10, 18, 38, 0.95);
+      border-bottom: 1px solid rgba(0, 229, 255, 0.2);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(12px);
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .brand img {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 2px solid #00E5FF;
+      box-shadow: 0 0 14px rgba(0, 229, 255, 0.4);
+    }
+    .brand-text h1 {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: #FFFFFF;
+    }
+    .brand-text span {
+      font-size: 11px;
+      color: #00E5FF;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    .header-actions {
+      display: flex;
+      gap: 12px;
+    }
+    .btn {
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 13px;
+      text-decoration: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: none;
+      transition: all 0.2s ease;
+    }
+    .btn-cyan {
+      background: linear-gradient(135deg, #00E5FF 0%, #0284C7 100%);
+      color: #050914;
+      box-shadow: 0 4px 14px rgba(0, 229, 255, 0.3);
+    }
+    .btn-cyan:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(0, 229, 255, 0.5);
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid rgba(0, 229, 255, 0.4);
+      color: #00E5FF;
+    }
+    .btn-outline:hover {
+      background: rgba(0, 229, 255, 0.1);
+    }
+    .container {
+      max-width: 960px;
+      margin: 40px auto;
+      padding: 0 20px 80px 20px;
+    }
+    .hero-banner {
+      background: linear-gradient(180deg, rgba(13, 24, 51, 0.8) 0%, rgba(5, 9, 20, 0.8) 100%);
+      border: 1px solid rgba(0, 229, 255, 0.25);
+      border-radius: 16px;
+      padding: 36px 32px;
+      margin-bottom: 40px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      background: rgba(0, 229, 255, 0.15);
+      border: 1px solid #00E5FF;
+      color: #00E5FF;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .hero-title {
+      font-size: 28px;
+      font-weight: 800;
+      color: #FFFFFF;
+      margin-bottom: 10px;
+    }
+    .hero-desc {
+      color: #94A3B8;
+      font-size: 15px;
+      max-width: 680px;
+    }
+    .toc-card {
+      background: #0A1226;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 40px;
+    }
+    .toc-card h3 {
+      color: #38BDF8;
+      font-size: 15px;
+      font-weight: 800;
+      margin-bottom: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .toc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 10px;
+    }
+    .toc-grid a {
+      color: #CBD5E1;
+      text-decoration: none;
+      font-size: 14px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid transparent;
+      transition: all 0.2s;
+    }
+    .toc-grid a:hover {
+      color: #00E5FF;
+      background: rgba(0, 229, 255, 0.08);
+      border-color: rgba(0, 229, 255, 0.3);
+      padding-left: 16px;
+    }
+    .section-card {
+      background: #0A1226;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 32px;
+      margin-bottom: 30px;
+      scroll-margin-top: 100px;
+    }
+    .section-card h2 {
+      color: #FFFFFF;
+      font-size: 22px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 12px;
+    }
+    .section-card h2 .icon-tag {
+      background: rgba(0, 229, 255, 0.15);
+      color: #00E5FF;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    .section-card h3 {
+      color: #38BDF8;
+      font-size: 17px;
+      font-weight: 700;
+      margin: 24px 0 12px 0;
+    }
+    .section-card p {
+      color: #94A3B8;
+      font-size: 15px;
+      margin-bottom: 14px;
+    }
+    .step-list {
+      list-style: none;
+      counter-reset: step-counter;
+      margin: 16px 0;
+    }
+    .step-list li {
+      counter-increment: step-counter;
+      position: relative;
+      padding-left: 42px;
+      margin-bottom: 14px;
+      color: #CBD5E1;
+      font-size: 14px;
+    }
+    .step-list li::before {
+      content: counter(step-counter);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 28px;
+      height: 28px;
+      background: #1E293B;
+      border: 1px solid #00E5FF;
+      color: #00E5FF;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 12px;
+    }
+    .badge-box {
+      background: rgba(16, 185, 129, 0.1);
+      border-left: 4px solid #10B981;
+      padding: 14px 18px;
+      border-radius: 0 8px 8px 0;
+      margin: 16px 0;
+      color: #D1FAE5;
+      font-size: 14px;
+    }
+    .badge-box.warn {
+      background: rgba(245, 158, 11, 0.1);
+      border-left-color: #F59E0B;
+      color: #FEF3C7;
+    }
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin: 20px 0;
+    }
+    .feature-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+      padding: 18px;
+    }
+    .feature-card h4 {
+      color: #F8FAFC;
+      font-size: 15px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .feature-card p {
+      font-size: 13px;
+      color: #94A3B8;
+      margin: 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 18px 0;
+      font-size: 14px;
+    }
+    th, td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    th {
+      background: rgba(255, 255, 255, 0.04);
+      color: #38BDF8;
+      font-weight: 700;
+    }
+    td {
+      color: #CBD5E1;
+    }
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      color: #64748B;
+      font-size: 13px;
+    }
+    footer a {
+      color: #00E5FF;
+      text-decoration: none;
+    }
+    @media print {
+      header, .header-actions, .toc-card, footer { display: none; }
+      body { background: #FFFFFF; color: #000000; }
+      .section-card { border: 1px solid #CCC; background: #FFF; color: #000; }
+      .section-card h2, .section-card h3 { color: #000; }
+      .section-card p, .step-list li { color: #333; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <img src="./logo_emblem.svg" alt="Style SaaS Logo">
+      <div class="brand-text">
+        <h1>STYLE SAAS</h1>
+        <span>Informáticos Venezuela</span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button onclick="window.print()" class="btn btn-outline">🖨️ Imprimir / Guardar PDF</button>
+      <a href="/" class="btn btn-cyan">🚀 Ir a la App</a>
+    </div>
+  </header>
+
+  <div class="container">
+    
+    <div class="hero-banner">
+      <span class="hero-badge">Documentación Oficial de Producción</span>
+      <h1 class="hero-title">Manual de Usuario Completo — Style SaaS</h1>
+      <p class="hero-desc">
+        Guía paso a paso para la gestión integral de citas, cobros bimonetarios con tasa oficial BCV, catálogo de servicios, recibos digitales vía WhatsApp y control de licencias.
+      </p>
+    </div>
+
+    <div class="toc-card">
+      <h3>📑 Índice Rápido del Manual</h3>
+      <div class="toc-grid">
+        <a href="#sec-intro">1. Visión General</a>
+        <a href="#sec-roles">2. Roles y Accesos</a>
+        <a href="#sec-auth">3. Login y Contraseñas</a>
+        <a href="#sec-agenda">4. Agenda y Citas</a>
+        <a href="#sec-clientes">5. Gestión de Clientes</a>
+        <a href="#sec-servicios">6. Catálogo de Servicios</a>
+        <a href="#sec-recibos">7. Recibos WhatsApp</a>
+        <a href="#sec-admin">8. Módulo Super Admin</a>
+        <a href="#sec-faq">9. Preguntas Frecuentes</a>
+        <a href="#sec-soporte">10. Soporte Técnico</a>
+      </div>
+    </div>
+
+    <!-- SECCIÓN 1: INTRODUCCIÓN -->
+    <div class="section-card" id="sec-intro">
+      <h2><span class="icon-tag">01</span> Visión General del Sistema</h2>
+      <p>
+        <strong>Style SaaS</strong> es la plataforma de automatización diseñada por <em>Informáticos Venezuela</em> para barberías, estéticas, spas y salones de belleza. Permite erradicar por completo los cuadernos físicos, evitando pérdidas de dinero por fluctuación cambiaria y optimizando el tiempo de atención.
+      </p>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <h4>💵 Tasa Oficial BCV</h4>
+          <p>Sincronización cambiaria en vivo. Tarifas en USD con conversión automática y legal a Bolívares.</p>
+        </div>
+        <div class="feature-card">
+          <h4>📱 100% Mobile First</h4>
+          <p>Operación fluida desde cualquier smartphone sin necesidad de instalar aplicaciones pesadas.</p>
+        </div>
+        <div class="feature-card">
+          <h4>🧾 Recibos WhatsApp</h4>
+          <p>Generación de comprobantes digitales de servicio con envío directo al chat del cliente con un solo clic.</p>
+        </div>
+        <div class="feature-card">
+          <h4>🛡️ Máxima Seguridad</h4>
+          <p>Aislamiento estricto multi-inquilino. Ningún barbero puede ver los clientes ni ingresos de otro colega.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN 2: ROLES -->
+    <div class="section-card" id="sec-roles">
+      <h2><span class="icon-tag">02</span> Roles y Niveles de Acceso</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Rol</th>
+            <th>Usuario Típico</th>
+            <th>Funciones y Permisos Principales</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>SUPER_ADMIN</strong></td>
+            <td>Luis Uzcátegui (Gerencia)</td>
+            <td>Creación de salones/barberos, activación de meses de licencia, restablecimiento manual de contraseñas, métricas globales y auditoría.</td>
+          </tr>
+          <tr>
+            <td><strong>WORKER</strong></td>
+            <td>Barbero / Estilista</td>
+            <td>Gestión de su agenda personal, registro express de clientes, configuración de sus propios servicios y emisión de recibos digitales.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- SECCIÓN 3: AUTENTICACIÓN -->
+    <div class="section-card" id="sec-auth">
+      <h2><span class="icon-tag">03</span> Inicio de Sesión y Seguridad de Contraseñas</h2>
+      
+      <h3>3.1 Cómo Iniciar Sesión</h3>
+      <ol class="step-list">
+        <li>Ingrese desde su teléfono o PC a <strong>style.informaticosvenezuela.com</strong>.</li>
+        <li>En el primer campo escriba su <strong>Cédula de Identidad</strong> (ej: <code>V-12345678</code>) o su correo electrónico registrado.</li>
+        <li>Ingrese su contraseña secreta y presione <strong>"Entrar al Sistema"</strong>.</li>
+      </ol>
+
+      <div class="badge-box">
+        🔒 <strong>Requisitos Obligatorios de Contraseña:</strong> Mínimo 8 caracteres, al menos 1 letra mayúscula, 1 minúscula y 1 número. El sistema cuenta con un <strong>Semáforo de Fortaleza</strong> que le indicará en verde cuando su clave sea segura.
+      </div>
+
+      <h3>3.2 ¿Cómo recuperar mi contraseña?</h3>
+      <p>Existen dos métodos de recuperación:</p>
+      <ul style="margin-left: 20px; color: #CBD5E1; font-size: 14px;">
+        <li style="margin-bottom: 8px;"><strong>Auto-servicio por el usuario:</strong> En la pantalla de login, haga clic en <em>"¿Olvidaste tu contraseña? Restablécela aquí"</em>. Ingrese su Cédula y Correo registrados, defina su nueva clave y el sistema le dará acceso al instante.</li>
+        <li><strong>Asistido por el Administrador:</strong> Si olvidó su correo, el Super Admin Luis Uzcátegui puede ingresar a su panel, hacer clic en el botón <strong>"🔑 Clave"</strong> al lado de su nombre y asignarle una nueva clave en 5 segundos.</li>
+      </ul>
+    </div>
+
+    <!-- SECCIÓN 4: AGENDA -->
+    <div class="section-card" id="sec-agenda">
+      <h2><span class="icon-tag">04</span> Agenda de Citas y Calendario</h2>
+      <p>El calendario le permite visualizar sus citas del día o programar citas futuras.</p>
+      
+      <h3>Pasos para registrar una Nueva Cita:</h3>
+      <ol class="step-list">
+        <li>En la pestaña <strong>"Agenda"</strong>, presione el botón verde <strong>"+ Nueva Cita"</strong>.</li>
+        <li>Seleccione el cliente en el menú desplegable (si es nuevo, regístrelo en "Mis Clientes").</li>
+        <li>Seleccione el servicio (el precio en USD y Bolívares se calcula automáticamente según la tasa BCV).</li>
+        <li>Indique el día y la hora de la cita.</li>
+        <li>Presione <strong>"Confirmar y Agendar"</strong>.</li>
+      </ol>
+
+      <div class="badge-box">
+        ✅ <strong>Finalizar Cita:</strong> Al terminar el corte, pulse <strong>"Completar"</strong> en la tarjeta de la cita. Esto actualizará su resumen de ingresos y habilitará la creación del recibo digital.
+      </div>
+    </div>
+
+    <!-- SECCIÓN 5: CLIENTES -->
+    <div class="section-card" id="sec-clientes">
+      <h2><span class="icon-tag">05</span> Directorio de Clientes (Registro Express)</h2>
+      <p>Para no demorar la atención en el salón, solo se solicitan 3 datos básicos:</p>
+      <ol class="step-list">
+        <li>Haga clic en la pestaña <strong>"Mis Clientes"</strong> y luego en <strong>"+ Nueva Cliente"</strong>.</li>
+        <li>Ingrese el <strong>Nombre Completo</strong> (ej. <em>Carlos Rodríguez</em>).</li>
+        <li>Ingrese el <strong>Número de WhatsApp</strong> (ej. <em>0412-5558899</em>).</li>
+        <li>Ingrese una <strong>Dirección Corta</strong> o sector (ej. <em>Centro, El Paraíso</em>).</li>
+        <li>Presione <strong>"Guardar Cliente"</strong>.</li>
+      </ol>
+      <p>💡 <em>Al hacer clic en el botón de WhatsApp al lado del cliente, podrá chatear directamente con él para confirmar o recordar su turno.</em></p>
+    </div>
+
+    <!-- SECCIÓN 6: SERVICIOS -->
+    <div class="section-card" id="sec-servicios">
+      <h2><span class="icon-tag">06</span> Catálogo de Servicios y Precios</h2>
+      <p>Personalice los servicios que ofrece su salón (cortes, tintes, cejas, keratina):</p>
+      <ol class="step-list">
+        <li>Vaya a la pestaña <strong>"Servicios"</strong> y presione <strong>"+ Nuevo Servicio"</strong>.</li>
+        <li>Escriba el nombre del servicio (ej. <em>Corte Clásico + Lavado</em>).</li>
+        <li>Fije el precio en <strong>Dólares ($)</strong> (ej. <code>$10.00</code>).</li>
+        <li>El sistema mostrará automáticamente la tarifa equivalente en Bolívares según la tasa del día.</li>
+        <li>Haga clic en <strong>"Registrar Servicio"</strong>.</li>
+      </ol>
+    </div>
+
+    <!-- SECCIÓN 7: RECIBOS DIGITALES -->
+    <div class="section-card" id="sec-recibos">
+      <h2><span class="icon-tag">07</span> Recibos Digitales para WhatsApp</h2>
+      <p>Evite gastar en impresoras térmicas, rollos de papel o tinta:</p>
+      <ol class="step-list">
+        <li>En cualquier cita completada, presione el botón <strong>"🧾 Recibo"</strong>.</li>
+        <li>Aparecerá el comprobante digital listo con el nombre de su salón, fecha, detalle del servicio, precio en USD ($) y total exacto en Bolívares (Bs.) con la tasa BCV oficial.</li>
+        <li>Presione <strong>"Enviar por WhatsApp"</strong> para abrir el chat del cliente con el mensaje pre-cargado.</li>
+        <li>También dispone del botón <strong>"Copiar Texto"</strong> para pegarlo en cualquier red social o correo.</li>
+      </ol>
+    </div>
+
+    <!-- SECCIÓN 8: SUPER ADMIN -->
+    <div class="section-card" id="sec-admin">
+      <h2><span class="icon-tag">08</span> Panel Maestro de Super Administrador</h2>
+      <p>Módulo exclusivo para <strong>Luis Uzcátegui</strong> y la administración central:</p>
+      <ul style="margin-left: 20px; color: #CBD5E1; font-size: 14px;">
+        <li style="margin-bottom: 10px;"><strong>Alta de Salones y Trabajadores:</strong> Creación de nuevos usuarios con cédula, correo y contraseña inicial.</li>
+        <li style="margin-bottom: 10px;"><strong>Control de Licencias:</strong> Asignación de meses de vigencia (1, 3, 6 o 12 meses). Renovación con un clic o suspensión temporal inmediata (botón <em>"Ban"</em>).</li>
+        <li style="margin-bottom: 10px;"><strong>Gestión de Credenciales (🔑 Clave):</strong> Restablecimiento manual de contraseñas olvidadas sin trámites complejos.</li>
+        <li style="margin-bottom: 10px;"><strong>Auditoría Inmutable:</strong> Registro detallado de cada intento de acceso, IP de origen, fecha y hora de modificaciones críticas.</li>
+      </ul>
+    </div>
+
+    <!-- SECCIÓN 9: FAQ -->
+    <div class="section-card" id="sec-faq">
+      <h2><span class="icon-tag">09</span> Preguntas Frecuentes (FAQ)</h2>
+      <h4 style="color: #FFFFFF; margin-top: 10px;">¿Qué ocurre si la tasa del BCV sube en la tarde?</h4>
+      <p>El sistema actualiza la tasa oficial automáticamente. Las citas ya cobradas quedan registradas con la tasa de su momento, y los nuevos cobros se calculan con la tasa vigente sin que usted deba cambiar ningún precio a mano.</p>
+
+      <h4 style="color: #FFFFFF; margin-top: 14px;">¿Mis datos se borran si se apaga el teléfono?</h4>
+      <p>No. Todos los datos se sincronizan en la nube en tiempo real. Puede cambiar de celular o computadora y su agenda estará exactamente donde la dejó.</p>
+
+      <h4 style="color: #FFFFFF; margin-top: 14px;">¿Cómo renuevo mi suscripción si se vence mi mes?</h4>
+      <p>Contacte directamente al Super Administrador por WhatsApp. Al reportar su pago móvil o transferencia, su licencia se renovará al instante sin pérdida de datos.</p>
+    </div>
+
+    <!-- SECCIÓN 10: SOPORTE -->
+    <div class="section-card" id="sec-soporte">
+      <h2><span class="icon-tag">10</span> Canales de Soporte y Contacto</h2>
+      <p>Para asistencia técnica, activación de nuevas barberías o salones:</p>
+      <p>
+        🌐 <strong>Plataforma:</strong> <a href="https://style.informaticosvenezuela.com/" target="_blank" style="color: #00E5FF;">style.informaticosvenezuela.com</a><br>
+        📲 <strong>WhatsApp de Soporte:</strong> <a href="https://wa.me/584242964339" target="_blank" style="color: #00E5FF;">+58 424-2964339</a><br>
+        🏢 <strong>Empresa:</strong> Informáticos Venezuela<br>
+        👤 <strong>Super Administrador:</strong> Luis Uzcátegui
+      </p>
+    </div>
+
+  </div>
+
+  <footer>
+    <p>© 2026 Style SaaS — Desarrollado por <a href="https://style.informaticosvenezuela.com/">Informáticos Venezuela</a>. Todos los derechos reservados.</p>
+  </footer>
+
+</body>
+</html>
