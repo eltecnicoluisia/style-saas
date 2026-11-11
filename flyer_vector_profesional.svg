@@ -1,0 +1,266 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920" width="1080" height="1920">
+  <defs>
+    <!-- Paleta Cromática: Cyber Navy Deep (Identidad Oficial Informáticos Venezuela) -->
+    <linearGradient id="cyberBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#050914"/>
+      <stop offset="40%" stop-color="#0A1226"/>
+      <stop offset="75%" stop-color="#0D1833"/>
+      <stop offset="100%" stop-color="#040710"/>
+    </linearGradient>
+
+    <!-- Resplandor tecnológico azul / cyan -->
+    <radialGradient id="cyberGlowTop" cx="50%" cy="15%" r="40%">
+      <stop offset="0%" stop-color="rgba(0, 229, 255, 0.16)"/>
+      <stop offset="50%" stop-color="rgba(37, 99, 235, 0.08)"/>
+      <stop offset="100%" stop-color="rgba(0, 0, 0, 0)"/>
+    </radialGradient>
+
+    <radialGradient id="cyberGlowCenter" cx="50%" cy="52%" r="45%">
+      <stop offset="0%" stop-color="rgba(37, 99, 235, 0.15)"/>
+      <stop offset="60%" stop-color="rgba(0, 229, 255, 0.04)"/>
+      <stop offset="100%" stop-color="rgba(0, 0, 0, 0)"/>
+    </radialGradient>
+
+    <!-- Degradados metálicos y neón para trazos y botones -->
+    <linearGradient id="neonCyan" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00E5FF"/>
+      <stop offset="50%" stop-color="#38BDF8"/>
+      <stop offset="100%" stop-color="#2563EB"/>
+    </linearGradient>
+
+    <linearGradient id="btnCyanGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00F0FF"/>
+      <stop offset="60%" stop-color="#0284C7"/>
+      <stop offset="100%" stop-color="#1D4ED8"/>
+    </linearGradient>
+
+    <linearGradient id="emeraldGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#34D399"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+
+    <linearGradient id="glassCard" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="rgba(19, 31, 56, 0.85)"/>
+      <stop offset="100%" stop-color="rgba(11, 20, 38, 0.95)"/>
+    </linearGradient>
+
+    <!-- Filtros de sombra y brillo -->
+    <filter id="phoneShadow" x="-15%" y="-10%" width="130%" height="125%">
+      <feDropShadow dx="0" dy="24" stdDeviation="30" flood-color="#000000" flood-opacity="0.85"/>
+      <feDropShadow dx="0" dy="8" stdDeviation="16" flood-color="#00E5FF" flood-opacity="0.2"/>
+    </filter>
+
+    <filter id="neonButtonGlow" x="-20%" y="-30%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="20" flood-color="#00E5FF" flood-opacity="0.45"/>
+    </filter>
+
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&amp;display=swap');
+      text {
+        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      }
+    </style>
+  </defs>
+
+  <!-- 1. Fondo Cyber Navy Profundo -->
+  <rect width="1080" height="1920" fill="url(#cyberBg)"/>
+  <rect width="1080" height="1920" fill="url(#cyberGlowTop)"/>
+  <rect width="1080" height="1920" fill="url(#cyberGlowCenter)"/>
+
+  <!-- 2. Marco Perimétrico de Precisión Milimétrica Simétrica (Margen 60px exacto) -->
+  <rect x="60" y="60" width="960" height="1800" rx="32" fill="none" stroke="rgba(0, 229, 255, 0.22)" stroke-width="1.8"/>
+  <rect x="72" y="72" width="936" height="1776" rx="22" fill="none" stroke="rgba(255, 255, 255, 0.05)" stroke-width="1"/>
+
+  <!-- Esquinas vectoriales tecno-geométricas -->
+  <path d="M 60 140 L 60 60 L 140 60" fill="none" stroke="url(#neonCyan)" stroke-width="3"/>
+  <path d="M 940 60 L 1020 60 L 1020 140" fill="none" stroke="url(#neonCyan)" stroke-width="3"/>
+  <path d="M 60 1780 L 60 1860 L 140 1860" fill="none" stroke="url(#neonCyan)" stroke-width="3"/>
+  <path d="M 940 1860 L 1020 1860 L 1020 1780" fill="none" stroke="url(#neonCyan)" stroke-width="3"/>
+
+  <!-- 3. Cabecera Oficial Informáticos Venezuela (Perfectamente Centrada y Simétrica) -->
+  <g transform="translate(540, 140)">
+    <!-- Emblema oficial en círculo perfecto -->
+    <g transform="translate(-40, 0)">
+      <circle cx="40" cy="40" r="38" fill="#0A1122" stroke="url(#neonCyan)" stroke-width="2.5"/>
+      <polygon points="40,12 63,25 63,52 40,65 17,52 17,25" fill="#060A14" stroke="url(#neonCyan)" stroke-width="1.8"/>
+      <path d="M 40,22 L 40,32 M 28,46 L 36,42 M 52,46 L 44,42" stroke="#38BDF8" stroke-width="1.8" stroke-linecap="round"/>
+      <rect x="34" y="35" width="12" height="12" rx="3" fill="url(#neonCyan)"/>
+      <circle cx="40" cy="41" r="2.5" fill="#FFFFFF"/>
+      <circle cx="40" cy="22" r="2.2" fill="#00E5FF"/>
+      <circle cx="28" cy="46" r="2.2" fill="#00E5FF"/>
+      <circle cx="52" cy="46" r="2.2" fill="#00E5FF"/>
+    </g>
+
+    <!-- Títulos de Marca Centrados -->
+    <text x="0" y="112" font-size="28" font-weight="900" letter-spacing="4" fill="#FFFFFF" text-anchor="middle">
+      STYLE <tspan fill="url(#neonCyan)">SAAS</tspan>
+    </text>
+    <text x="0" y="138" font-size="14" font-weight="700" letter-spacing="5" fill="#38BDF8" text-anchor="middle">
+      INFORMÁTICOS VENEZUELA
+    </text>
+  </g>
+
+  <!-- Divisor sutil centrado -->
+  <line x1="120" y1="310" x2="960" y2="310" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1"/>
+
+  <!-- 4. Titular Principal (Jerarquía de Alto Impacto, Centrado y Legible) -->
+  <g transform="translate(540, 365)">
+    <!-- Badge de categoría -->
+    <rect x="-180" y="0" width="360" height="36" rx="18" fill="rgba(0, 229, 255, 0.10)" stroke="rgba(0, 229, 255, 0.35)" stroke-width="1.2"/>
+    <text x="0" y="23" font-size="13" font-weight="800" letter-spacing="3" fill="#38BDF8" text-anchor="middle">
+      BARBERÍAS • SALONES • NAIL BARS
+    </text>
+
+    <!-- Titular Gigante Limpio -->
+    <text x="0" y="95" font-size="58" font-weight="900" letter-spacing="-1" fill="#FFFFFF" text-anchor="middle">
+      Controla tu salón
+    </text>
+    <text x="0" y="165" font-size="58" font-weight="900" letter-spacing="-1" fill="url(#neonCyan)" text-anchor="middle">
+      desde tu celular.
+    </text>
+
+    <!-- Subtítulo -->
+    <text x="0" y="222" font-size="22" font-weight="400" fill="#94A3B8" letter-spacing="0.5" text-anchor="middle">
+      Cero cuadernos. Cero cuentas manuales a mano.
+    </text>
+    <text x="0" y="254" font-size="22" font-weight="600" fill="#E2E8F0" letter-spacing="0.5" text-anchor="middle">
+      Cálculo de comisiones y tasa BCV al instante.
+    </text>
+  </g>
+
+  <!-- 5. Mockup de Celular Gigante, Nítido y Proporcional (Centrado 540x1030) -->
+  <g transform="translate(540, 1025)" filter="url(#phoneShadow)">
+    <!-- Chasis del Smartphone -->
+    <rect x="-240" y="-345" width="480" height="690" rx="46" fill="#070C18" stroke="rgba(0, 229, 255, 0.45)" stroke-width="3"/>
+    <!-- Bisel de pantalla -->
+    <rect x="-224" y="-329" width="448" height="658" rx="38" fill="#0B1325" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1"/>
+
+    <!-- Dynamic Island / Cámara -->
+    <rect x="-55" y="-314" width="110" height="24" rx="12" fill="#020409"/>
+    <circle cx="32" cy="-302" r="5" fill="#111B30"/>
+
+    <!-- Cabecera Interior de la App -->
+    <g transform="translate(0, -255)">
+      <circle cx="-190" cy="0" r="15" fill="#00E5FF" fill-opacity="0.2"/>
+      <path d="M -196 -4 L -184 8 M -184 -4 L -196 8" stroke="#00E5FF" stroke-width="2"/>
+      <text x="-165" y="-4" font-size="14" font-weight="800" fill="#FFFFFF" letter-spacing="1">STYLE SAAS</text>
+      <text x="-165" y="12" font-size="11" font-weight="600" fill="#38BDF8">Barbería &amp; Estética Pro</text>
+
+      <!-- Badge Online / Sincronizado -->
+      <rect x="80" y="-12" width="110" height="24" rx="12" fill="rgba(16, 185, 129, 0.15)" stroke="#10B981" stroke-width="1"/>
+      <circle cx="95" cy="0" r="4" fill="#34D399"/>
+      <text x="105" y="4" font-size="10" font-weight="700" fill="#34D399">EN VIVO (BCV)</text>
+    </g>
+
+    <!-- ============================================================== -->
+    <!-- TARJETA 1: TASA OFICIAL BCV Y FACTURACIÓN EN BS (PROTAGONISTA) -->
+    <!-- ============================================================== -->
+    <g transform="translate(0, -185)">
+      <!-- Fondo de la tarjeta con margen generoso de 20px a cada lado -->
+      <rect x="-200" y="0" width="400" height="105" rx="18" fill="url(#glassCard)" stroke="rgba(0, 229, 255, 0.35)" stroke-width="1.5"/>
+
+      <!-- Icono Banco / Divisa BCV -->
+      <rect x="-182" y="18" width="46" height="46" rx="12" fill="rgba(0, 229, 255, 0.15)"/>
+      <text x="-167" y="48" font-size="20" font-weight="900" fill="#00E5FF">Bs</text>
+
+      <!-- Textos y Métricas de Tasa Oficial -->
+      <text x="-124" y="32" font-size="12" font-weight="700" fill="#94A3B8" letter-spacing="1.5">TASA OFICIAL BCV (VENEZUELA)</text>
+      <text x="-124" y="66" font-size="26" font-weight="900" fill="#FFFFFF">Bs. 49,85 <tspan font-size="14" font-weight="700" fill="#38BDF8">/ 1.00 USD</tspan></text>
+      <text x="-124" y="90" font-size="11" font-weight="600" fill="#34D399">✓ Conversión automática exacta en Dólares y Bolívares</text>
+    </g>
+
+    <!-- ============================================================== -->
+    <!-- TARJETA 2: CÁLCULO AUTOMÁTICO DE COMISIONES (DOLOR RESUELTO)   -->
+    <!-- ============================================================== -->
+    <g transform="translate(0, -60)">
+      <rect x="-200" y="0" width="400" height="105" rx="18" fill="url(#glassCard)" stroke="rgba(56, 189, 248, 0.25)" stroke-width="1.2"/>
+
+      <!-- Icono Tijeras / Porcentaje -->
+      <rect x="-182" y="18" width="46" height="46" rx="12" fill="rgba(16, 185, 129, 0.15)"/>
+      <text x="-167" y="47" font-size="20" font-weight="900" fill="#34D399">%</text>
+
+      <!-- Métricas de Comisión -->
+      <text x="-124" y="32" font-size="12" font-weight="700" fill="#94A3B8" letter-spacing="1.5">COMISIONES POR BARBERO/ESTILISTA</text>
+      <text x="-124" y="66" font-size="26" font-weight="900" fill="url(#emeraldGrad)">$ 1.240,00 <tspan font-size="13" font-weight="700" fill="#94A3B8">(Bs. 61.814)</tspan></text>
+      <text x="-124" y="90" font-size="11" font-weight="600" fill="#CBD5E1">✓ Deducción de insumos y pago exacto al instante</text>
+    </g>
+
+    <!-- ============================================================== -->
+    <!-- TARJETA 3: AGENDA Y CITAS DEL DÍA                             -->
+    <!-- ============================================================== -->
+    <g transform="translate(0, 65)">
+      <rect x="-200" y="0" width="400" height="95" rx="18" fill="url(#glassCard)" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1"/>
+
+      <!-- Icono Agenda / Calendario -->
+      <rect x="-182" y="15" width="46" height="46" rx="12" fill="rgba(56, 189, 248, 0.15)"/>
+      <path d="M -167 30 h 16 v 14 h -16 z M -163 26 v 4 M -155 26 v 4" stroke="#38BDF8" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+      <!-- Métricas de Citas -->
+      <text x="-124" y="32" font-size="12" font-weight="700" fill="#94A3B8" letter-spacing="1.5">AGENDA EN TIEMPO REAL</text>
+      <text x="-124" y="62" font-size="22" font-weight="900" fill="#FFFFFF">18 Citas Programadas</text>
+      <text x="-124" y="82" font-size="11" font-weight="600" fill="#38BDF8">✓ Sin choques de horarios ni desorden por WhatsApp</text>
+    </g>
+
+    <!-- Barra de Navegación del Celular -->
+    <g transform="translate(0, 195)">
+      <rect x="-200" y="0" width="400" height="50" rx="14" fill="#080E1C" stroke="rgba(255, 255, 255, 0.05)" stroke-width="1"/>
+      <circle cx="-130" cy="25" r="5" fill="#00E5FF"/>
+      <circle cx="-45" cy="25" r="5" fill="#334155"/>
+      <circle cx="45" cy="25" r="5" fill="#334155"/>
+      <circle cx="130" cy="25" r="5" fill="#334155"/>
+      <!-- Home bar -->
+      <rect x="-45" y="62" width="90" height="5" rx="2.5" fill="#475569"/>
+    </g>
+  </g>
+
+  <!-- 6. 3 Pilares Inferiores Equilibrados Simétricamente (x=100 a x=980, 880px total) -->
+  <g transform="translate(100, 1420)">
+    <!-- Pilar 1 -->
+    <g transform="translate(0, 0)">
+      <rect x="0" y="0" width="275" height="150" rx="20" fill="rgba(10, 17, 34, 0.85)" stroke="rgba(0, 229, 255, 0.20)" stroke-width="1.2"/>
+      <text x="24" y="42" font-size="24" font-weight="900" fill="#00E5FF">01</text>
+      <text x="24" y="75" font-size="18" font-weight="800" fill="#FFFFFF">Cero Errores</text>
+      <text x="24" y="98" font-size="18" font-weight="800" fill="#FFFFFF">en Comisiones</text>
+      <text x="24" y="126" font-size="12" font-weight="500" fill="#94A3B8">Paga transparente cada día.</text>
+    </g>
+
+    <!-- Pilar 2 -->
+    <g transform="translate(302, 0)">
+      <rect x="0" y="0" width="275" height="150" rx="20" fill="rgba(10, 17, 34, 0.85)" stroke="rgba(56, 189, 248, 0.20)" stroke-width="1.2"/>
+      <text x="24" y="42" font-size="24" font-weight="900" fill="#38BDF8">02</text>
+      <text x="24" y="75" font-size="18" font-weight="800" fill="#FFFFFF">Economía</text>
+      <text x="24" y="98" font-size="18" font-weight="800" fill="#FFFFFF">Bimonetaria</text>
+      <text x="24" y="126" font-size="12" font-weight="500" fill="#94A3B8">Tasa BCV oficial siempre al día.</text>
+    </g>
+
+    <!-- Pilar 3 -->
+    <g transform="translate(605, 0)">
+      <rect x="0" y="0" width="275" height="150" rx="20" fill="rgba(10, 17, 34, 0.85)" stroke="rgba(16, 185, 129, 0.20)" stroke-width="1.2"/>
+      <text x="24" y="42" font-size="24" font-weight="900" fill="#34D399">03</text>
+      <text x="24" y="75" font-size="18" font-weight="800" fill="#FFFFFF">En tu Celular</text>
+      <text x="24" y="98" font-size="18" font-weight="800" fill="#FFFFFF">Sin Equipos Caros</text>
+      <text x="24" y="126" font-size="12" font-weight="500" fill="#94A3B8">Rápido y liviano en cualquier móvil.</text>
+    </g>
+  </g>
+
+  <!-- 7. Botón de Llamado a la Acción (CTA) Luminoso en Cyan Neón (x=100, width=880) -->
+  <g transform="translate(100, 1610)">
+    <rect x="0" y="0" width="880" height="96" rx="24" fill="url(#btnCyanGrad)" filter="url(#neonButtonGlow)"/>
+    <text x="440" y="58" font-size="26" font-weight="900" letter-spacing="2" fill="#040814" text-anchor="middle">
+      PRUEBA GRATIS STYLE SAAS AHORA →
+    </text>
+  </g>
+
+  <!-- 8. Pie de Página Profesional y Simétrico -->
+  <g transform="translate(540, 1745)">
+    <text x="0" y="32" font-size="24" font-weight="800" letter-spacing="1" fill="#FFFFFF" text-anchor="middle">
+      style.informaticosvenezuela.com
+    </text>
+    <text x="0" y="68" font-size="18" font-weight="700" fill="#38BDF8" text-anchor="middle">
+      WhatsApp Directo: +58 424-2964339
+    </text>
+    <text x="0" y="100" font-size="13" font-weight="700" letter-spacing="4" fill="#64748B" text-anchor="middle">
+      INGENIERÍA &amp; SOPORTE LOCAL: INFORMÁTICOS VENEZUELA
+    </text>
+  </g>
+</svg>
