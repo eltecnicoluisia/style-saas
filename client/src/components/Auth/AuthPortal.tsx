@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { api } from '../../services/api';
-import { UserCheck, Sparkles, ArrowRight, Lock, User, Mail, Phone, MapPin, IdCard, CheckCircle2, XCircle, ShieldCheck, KeyRound, ArrowLeft } from 'lucide-react';
+import { UserCheck, Sparkles, ArrowRight, Lock, User, Mail, Phone, MapPin, IdCard, CheckCircle2, XCircle, ShieldCheck, KeyRound, ArrowLeft, BookOpen } from 'lucide-react';
 import { AestheticFloatingVectors } from './AestheticFloatingVectors';
 
 interface AuthPortalProps {
@@ -107,6 +107,19 @@ export const AuthPortal: React.FC<AuthPortalProps> = ({ onLoginSuccess }) => {
     <div className="min-h-screen bg-slate-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
       {/* Canvas 2D de Vectores Estéticos Flotantes (32 figuras temáticas de Belleza, Barbería y Estética) */}
       <AestheticFloatingVectors />
+
+      {/* Acceso Directo al Manual de Usuario en la esquina superior */}
+      <div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-20 flex items-center space-x-3">
+        <a
+          href="/manual.html"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center space-x-2 px-3.5 py-2 rounded-full bg-slate-900/90 hover:bg-slate-800 text-sky-400 hover:text-cyan-300 border border-sky-500/30 hover:border-cyan-400/60 text-xs font-bold tracking-wide transition-all shadow-lg shadow-sky-950/50 backdrop-blur-md hover:scale-105"
+        >
+          <BookOpen className="w-4 h-4 text-cyan-400" />
+          <span>Manual de Usuario</span>
+        </a>
+      </div>
 
       {/* Background Glows */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-brand-600/10 rounded-full blur-3xl pointer-events-none" />
@@ -461,6 +474,28 @@ export const AuthPortal: React.FC<AuthPortalProps> = ({ onLoginSuccess }) => {
 
 
 
+        </div>
+
+        {/* Acceso Destacado al Manual de Usuario al pie de la pantalla */}
+        <div className="mt-6 text-center z-10 flex flex-col sm:flex-row items-center justify-center gap-3 text-xs text-slate-400">
+          <a
+            href="/manual.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-cyan-400 hover:text-white border border-cyan-500/30 hover:border-cyan-400/60 transition-all font-semibold shadow-lg shadow-cyan-950/40 backdrop-blur-md hover:scale-[1.02]"
+          >
+            <BookOpen className="w-4 h-4 text-cyan-400" />
+            <span>📖 Ver Manual de Usuario Completo</span>
+          </a>
+          <span className="text-slate-600 hidden sm:inline">•</span>
+          <a
+            href="/ver_flyer.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center space-x-2 px-3.5 py-2.5 rounded-xl bg-slate-900/70 hover:bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-800 hover:border-slate-700 transition-all font-medium"
+          >
+            <span>🖼️ Ver Flyer Informativo</span>
+          </a>
         </div>
       </div>
     </div>
