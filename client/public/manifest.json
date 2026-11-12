@@ -1,0 +1,57 @@
+{
+  "name": "Style SaaS — Informáticos Venezuela",
+  "short_name": "Style SaaS",
+  "description": "Plataforma Integral de Gestión para Centros de Estética, Barberías y Spas",
+  "start_url": "/",
+  "id": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#050914",
+  "theme_color": "#050914",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/pwa-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/logo_emblem.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["business", "productivity", "utilities"],
+  "shortcuts": [
+    {
+      "name": "Iniciar Sesión",
+      "url": "/",
+      "description": "Acceder a Style SaaS"
+    },
+    {
+      "name": "Manual de Usuario",
+      "url": "/manual.html",
+      "description": "Consultar el manual"
+    }
+  ]
+}
