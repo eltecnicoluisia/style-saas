@@ -246,8 +246,8 @@
   <!-- 7. Botón de Llamado a la Acción (CTA) Luminoso en Cyan Neón (x=100, width=880) -->
   <g transform="translate(100, 1610)">
     <rect x="0" y="0" width="880" height="96" rx="24" fill="url(#btnCyanGrad)" filter="url(#neonButtonGlow)"/>
-    <text x="440" y="58" font-size="26" font-weight="900" letter-spacing="2" fill="#040814" text-anchor="middle">
-      PRUEBA GRATIS STYLE SAAS AHORA →
+    <text x="440" y="58" font-size="25" font-weight="900" letter-spacing="1.5" fill="#040814" text-anchor="middle">
+      ¡SOLICITA 3 MESES DE PRUEBA GRATIS! →
     </text>
   </g>
 
